@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Faculty Portal - Campus Connect</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: 'Inter', sans-serif;
+
+            margin: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            height: 100vh;
+
+            background-color: #f9f9f9;
+
+            color: #111;
+        }
+
+
+        /* =========================
+           NAVBAR
+        ========================== */
+
+        nav.top-nav {
+
+            width: 100%;
+
+            height: 60px;
+
+            background: #000;
+
+            color: #fff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            flex-shrink: 0;
+        }
+
+
+        .logo {
+
+            font-family: 'League Gothic', sans-serif;
+
+            font-size: 28px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: capitalize;
+        }
+
+
+        .welname {
+
+            font-size: 14px;
+
+            font-weight: 500;
+        }
+
+
+        /* =========================
+           MAIN LAYOUT
+        ========================== */
+
+        .app-layout {
+
+            display: flex;
+
+            flex: 1;
+
+            height: calc(100vh - 60px);
+
+            overflow: hidden;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+
+        aside {
+
+            width: 260px;
+
+            background: #fff;
+
+            border-right: 2px solid #000;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 25px;
+
+            overflow-y: auto;
+
+            flex-shrink: 0;
+        }
+
+
+        aside h2 {
+
+            font-family: 'Sen', sans-serif;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            margin-top: 0;
+
+            margin-bottom: 25px;
+
+            text-align: center;
+        }
+
+
+        aside nav {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        aside a {
+
+            text-decoration: none;
+
+            color: #333;
+
+            font-weight: 600;
+
+            font-size: 14px;
+
+            padding: 10px 12px;
+
+            border-radius: 4px;
+
+            border: 1px solid transparent;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        aside a i {
+
+            width: 16px;
+
+            text-align: center;
+        }
+
+
+        aside a:hover,
+        aside a.active {
+
+            border: 1px solid #000;
+
+            background: #000;
+
+            color: #fff;
+        }
+
+
+        /* =========================
+           MAIN CONTENT
+        ========================== */
+
+        main {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 35px;
+
+            overflow-y: auto;
+
+            min-width: 0;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom: 2px solid #000;
+
+            padding-bottom: 20px;
+
+            margin-bottom: 25px;
+        }
+
+
+        header h1 {
+
+            margin: 0;
+
+            font-size: 24px;
+
+            font-family: 'Sen', sans-serif;
+
+            font-weight: 700;
+        }
+
+
+        .total-count {
+
+            font-weight: 600;
+
+            font-size: 14px;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================
+           ROLE SWITCHER
+        ========================== */
+
+        .role-switcher {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .role-tab {
+
+            padding: 8px 16px;
+
+            border: 2px solid #000;
+
+            border-radius: 6px;
+
+            background: #fff;
+
+            color: #000;
+
+            font-weight: 600;
+
+            font-size: 14px;
+
+            text-decoration: none;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .role-tab.active {
+
+            background: #000;
+
+            color: #fff;
+        }
+
+
+        .role-tab:hover {
+
+            background: #000;
+
+            color: #fff;
+        }
+
+
+        /* =========================
+           CONTROL BAR
+        ========================== */
+
+        .control-bar {
+
+            display: flex;
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .control-bar input,
+        .control-bar select,
+        .filter-btn {
+
+            padding: 10px 15px;
+
+            border: 2px solid #000;
+
+            border-radius: 6px;
+
+            font-family: 'Inter', sans-serif;
+
+            font-size: 14px;
+
+            background: #fff;
+
+            outline: none;
+        }
+
+
+        .control-bar input {
+
+            flex: 1;
+
+            min-width: 220px;
+
+            cursor: text;
+        }
+
+
+        .control-bar select {
+
+            width: 170px;
+
+            cursor: pointer;
+        }
+
+
+        .filter-btn {
+
+            background: #000;
+
+            color: #fff;
+
+            font-weight: 600;
+
+            text-decoration: none;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            cursor: pointer;
+
+            border-color: #000;
+
+            transition: 0.2s;
+        }
+
+
+        .filter-btn:hover {
+
+            opacity: 0.8;
+        }
+
+
+        /* =========================
+           TABLE
+        ========================== */
+
+        .table-container {
+
+            border: 2px solid #000;
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            text-align: left;
+
+            font-size: 14px;
+
+            min-width: 850px;
+        }
+
+
+        th,
+        td {
+
+            padding: 15px 20px;
+
+            border-bottom: 1px solid #000;
+        }
+
+
+        th {
+
+            background: #000;
+
+            color: #fff;
+
+            font-family: 'Sen', sans-serif;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        tr:last-child td {
+
+            border-bottom: none;
+        }
+
+
+        tr:hover td {
+
+            background-color: #f4f4f4;
+        }
+
+
+        /* =========================
+           PROFILE IMAGE
+        ========================== */
+
+        .profile-image {
+
+            width: 50px;
+
+            height: 50px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border: 2px solid #000;
+
+            display: block;
+        }
+
+
+        /* =========================
+           PROFILE BUTTON
+        ========================== */
+
+        .profile-btn {
+
+            padding: 7px 13px;
+
+            background: #000;
+
+            color: #fff;
+
+            border: none;
+
+            cursor: pointer;
+
+            border-radius: 4px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            text-decoration: none;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            font-family: 'Inter', sans-serif;
+
+            white-space: nowrap;
+
+            transition: 0.2s;
+        }
+
+
+        .profile-btn:hover {
+
+            opacity: 0.8;
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================== */
+
+        .empty-state {
+
+            text-align: center;
+
+            padding: 40px !important;
+
+            color: #666;
+        }
+
+
+        .empty-state i {
+
+            font-size: 30px;
+
+            margin-bottom: 10px;
+
+            display: block;
+
+            color: #999;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 900px) {
+
+            aside {
+
+                width: 210px;
+
+                padding: 20px;
+            }
+
+            main {
+
+                padding: 25px;
+            }
+
+            header h1 {
+
+                font-size: 21px;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .app-layout {
+
+                flex-direction: column;
+
+                overflow: auto;
+            }
+
+
+            aside {
+
+                width: 100%;
+
+                border-right: none;
+
+                border-bottom: 2px solid #000;
+
+                padding: 15px;
+            }
+
+
+            aside h2 {
+
+                margin-bottom: 15px;
+            }
+
+
+            aside nav {
+
+                flex-direction: row;
+
+                flex-wrap: wrap;
+            }
+
+
+            aside a {
+
+                flex: 1;
+
+                min-width: 130px;
+            }
+
+
+            main {
+
+                padding: 20px;
+            }
+
+
+            header {
+
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+
+            .control-bar {
+
+                flex-direction: column;
+            }
+
+
+            .control-bar input,
+            .control-bar select,
+            .filter-btn {
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         TOP NAVIGATION
+    ========================== -->
+
+    <nav class="top-nav">
+
+        <div class="logo">
+            College portal.
+        </div>
+
+
+        <div class="welname">
+            Hello {{ request.user }}
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         APPLICATION LAYOUT
+    ========================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside>
+
+            <h2>
+                FACULTY PORTAL
+            </h2>
+
+
+            <nav>
+
+                <a href="{% url 'facu_dash' %}">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    Dashboard
+                </a>
+
+
+                <a href="{% url 'facu_profile' %}">
+                    <i class="fa-solid fa-user"></i>
+                    My Profile
+                </a>
+
+
+                <a href="{% url 'f_manage' %}">
+                    <i class="fa-solid fa-users-gear"></i>
+                    Student Management
+                </a>
+
+
+                <a href="{% url 'announcement' %}">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
+                </a>
+
+
+                <a href="{% url 'f_notification' %}">
+                    <i class="fa-solid fa-bell"></i>
+                    Notifications
+                </a>
+
+
+                <a href="{% url 'campus_connect' %}"
+                   class="active">
+
+                    <i class="fa-solid fa-network-wired"></i>
+
+                    Campus Connect
+
+                </a>
+
+
+                <a href="#">
+                    <i class="fa-solid fa-file-lines"></i>
+                    Templates
+                </a>
+
+
+                <a href="{% url 'logout' %}"
+                   style="margin-top: 20px; color: #d9534f; border-color: #d9534f;">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Logout
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main>
+
+
+            <!-- HEADER -->
+
+            <header>
+
+                <h1>
+
+                    Campus Connect
+
+                    {% if role == 'faculty' %}
+
+                        - Faculty Directory
+
+                    {% else %}
+
+                        - Student Directory
+
+                    {% endif %}
+
+                </h1>
+
+
+                <span class="total-count">
+
+                    Total Count: {{ directory|length }}
+
+                </span>
+
+            </header>
+
+
+
+            <!-- =========================
+                 STUDENT / FACULTY SWITCH
+            ========================== -->
+
+            <div class="role-switcher">
+
+
+                <!-- STUDENTS -->
+
+                <a href="{% url 'campus_connect' %}?role=student"
+                   class="role-tab {% if role != 'faculty' %}active{% endif %}">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                    Students
+
+                </a>
+
+
+
+                <!-- FACULTY -->
+
+                <a href="{% url 'campus_connect' %}?role=faculty"
+                   class="role-tab {% if role == 'faculty' %}active{% endif %}">
+
+                    <i class="fa-solid fa-chalkboard-user"></i>
+
+                    Faculty
+
+                </a>
+
+            </div>
+
+
+
+            <!-- =========================
+                 SEARCH + FILTER
+            ========================== -->
+
+            <form method="GET"
+                  action="{% url 'campus_connect' %}"
+                  class="control-bar">
+
+
+                <!-- KEEP CURRENT ROLE -->
+
+                <input type="hidden"
+                       name="role"
+                       value="{{ role }}">
+
+
+
+                <!-- SEARCH -->
+
+                <input type="text"
+                       name="search"
+                       placeholder="{% if role == 'faculty' %}Search faculty by name or email...{% else %}Search students by name, roll no, or email...{% endif %}"
+                       value="{{ request.GET.search }}">
+
+
+
+                <!-- SEMESTER FILTER
+                     STUDENTS ONLY -->
+
+                {% if role != 'faculty' %}
+
+                    <select name="sem">
+
+                        <option value="">
+                            All Semesters
+                        </option>
+
+                        <option value="1"
+                            {% if request.GET.sem == '1' %}selected{% endif %}>
+                            Semester 1
+                        </option>
+
+                        <option value="2"
+                            {% if request.GET.sem == '2' %}selected{% endif %}>
+                            Semester 2
+                        </option>
+
+                        <option value="3"
+                            {% if request.GET.sem == '3' %}selected{% endif %}>
+                            Semester 3
+                        </option>
+
+                        <option value="4"
+                            {% if request.GET.sem == '4' %}selected{% endif %}>
+                            Semester 4
+                        </option>
+
+                        <option value="5"
+                            {% if request.GET.sem == '5' %}selected{% endif %}>
+                            Semester 5
+                        </option>
+
+                        <option value="6"
+                            {% if request.GET.sem == '6' %}selected{% endif %}>
+                            Semester 6
+                        </option>
+
+                        <option value="7"
+                            {% if request.GET.sem == '7' %}selected{% endif %}>
+                            Semester 7
+                        </option>
+
+                        <option value="8"
+                            {% if request.GET.sem == '8' %}selected{% endif %}>
+                            Semester 8
+                        </option>
+
+                    </select>
+
+                {% endif %}
+
+
+
+                <!-- DEPARTMENT -->
+
+                <select name="department">
+
+                    <option value="">
+                        All Departments
+                    </option>
+
+                    <option value="CSE"
+                        {% if request.GET.department == 'CSE' %}selected{% endif %}>
+                        CSE
+                    </option>
+
+                    <option value="IT"
+                        {% if request.GET.department == 'IT' %}selected{% endif %}>
+                        IT
+                    </option>
+
+                    <option value="EEE"
+                        {% if request.GET.department == 'EEE' %}selected{% endif %}>
+                        EEE
+                    </option>
+
+                    <option value="EC"
+                        {% if request.GET.department == 'EC' %}selected{% endif %}>
+                        EC
+                    </option>
+
+                    <option value="MECH"
+                        {% if request.GET.department == 'MECH' %}selected{% endif %}>
+                        MECH
+                    </option>
+
+                    <option value="CIVIL"
+                        {% if request.GET.department == 'CIVIL' %}selected{% endif %}>
+                        CIVIL
+                    </option>
+
+                </select>
+
+
+
+                <!-- APPLY FILTER -->
+
+                <button type="submit"
+                        class="filter-btn">
+
+                    <i class="fa-solid fa-filter"></i>
+
+                    Apply Filter
+
+                </button>
+
+
+
+                <!-- CLEAR FILTER -->
+
+                <a href="{% url 'campus_connect' %}?role={{ role }}"
+                   class="filter-btn">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                    Clear Filter
+
+                </a>
+
+            </form>
+
+
+
+            <!-- =========================
+                 DIRECTORY TABLE
+            ========================== -->
+
+            <div class="table-container">
+
+                <table>
+
+
+                    <!-- TABLE HEADER -->
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Profile
+                            </th>
+
+
+                            {% if role == 'faculty' %}
+
+
+                                <th>
+                                    Faculty Name
+                                </th>
+
+
+                                <th>
+                                    Department
+                                </th>
+
+
+                                <th>
+                                    Designation
+                                </th>
+
+
+                                <th>
+                                    Email
+                                </th>
+
+
+                            {% else %}
+
+
+                                <th>
+                                    Roll No
+                                </th>
+
+
+                                <th>
+                                    Student Name
+                                </th>
+
+
+                                <th>
+                                    Department
+                                </th>
+
+
+                                <th>
+                                    Semester
+                                </th>
+
+
+                                <th>
+                                    Email
+                                </th>
+
+
+                            {% endif %}
+
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <!-- TABLE BODY -->
+
+                    <tbody>
+
+
+                        {% for person in directory %}
+
+
+                            <tr>
+
+
+                                <!-- PROFILE IMAGE -->
+
+                                <td>
+
+                                    {% if person.profile_image %}
+
+                                        <img
+                                            src="{{ person.profile_image.url }}"
+                                            alt="Profile Image"
+                                            class="profile-image"
+                                        >
+
+                                    {% else %}
+
+                                        <img
+                                            src="/media/default.png"
+                                            alt="Default Profile Image"
+                                            class="profile-image"
+                                        >
+
+                                    {% endif %}
+
+                                </td>
+
+
+
+                                <!-- =====================
+                                     FACULTY DATA
+                                ====================== -->
+
+                                {% if role == 'faculty' %}
+
+
+                                    <td>
+
+                                        <strong>
+                                            {{ person.fullname }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.department }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.designation }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.user.email }}
+                                    </td>
+
+
+
+                                <!-- =====================
+                                     STUDENT DATA
+                                ====================== -->
+
+                                {% else %}
+
+
+                                    <td>
+
+                                        <strong>
+                                            {{ person.roll_no }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.fullname }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.department }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.sem }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ person.user.email }}
+                                    </td>
+
+
+                                {% endif %}
+
+
+
+                                <!-- =====================
+                                     VIEW PROFILE
+                                ====================== -->
+
+                                <td>
+
+                                    <a href=""
+                                       class="profile-btn">
+
+                                        <i class="fa-solid fa-user"></i>
+
+                                        View Profile
+
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        {% empty %}
+
+
+                            <tr>
+
+                                <td colspan="7"
+                                    class="empty-state">
+
+                                    <i class="fa-solid fa-user-slash"></i>
+
+                                    No records found.
+
+                                </td>
+
+                            </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </main>
+
+    </div>
+
+
+</body>
+
+</html>

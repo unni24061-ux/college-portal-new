@@ -1,342 +1,623 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Student Registration</title>
-    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background-color: #f9f9f9; }
-        
-        /* Navbar styling */
-        nav {
-            width: 100%;
-            height: 60px;
-            background: #000;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-sizing: border-box;
-        }
-        .logo {
-            font-family: 'League Gothic', sans-serif;
-            font-size: 28px;
-            letter-spacing: 1.5px;
-            text-transform: capitalize;
-        }
-        .nav-link {
-            color: #fff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            border: 1px solid #fff;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background 0.2s, color 0.2s;
-        }
-        .nav-link:hover {
-            background: #fff;
-            color: #000;
-        }
 
-        /* Center container for the form */
-        .container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
 
-        form { 
-            display: flex; 
-            flex-direction: column; 
-            width: 360px; 
-            gap: 15px; 
-            border: 2px solid #000; 
-            padding: 35px; 
-            box-sizing: border-box; 
-            border-radius: 8px; 
-            background: #fff; 
-            position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .field-group { display: flex; flex-direction: column; gap: 5px; position: relative; }
-        
-        /* Label & Tooltip container */
-        .label-container {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        label { font-size: 13px; font-weight: 600; color: #333; }
-        
-        /* Star styling and tooltip effect */
-        .info-star {
-            color: #d9534f;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            position: relative;
-        }
-        .success {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 14px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-        .error {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .info-star:hover::after {
-            content: "Password must be at least 8 characters long and include a mix of letters, numbers, and symbols.";
-            position: absolute;
-            bottom: 125%;
-            left: 0;
-            width: 220px;
-            background-color: #000;
-            color: #fff;
-            padding: 8px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 400;
-            line-height: 1.4;
-            z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            pointer-events: none;
-        }
+<style>
 
-        /* Input container for Show/Hide Password */
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
-        input { 
-            width: 100%;
-            padding: 10px; 
-            font-size: 14px; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-            font-family: 'Inter', sans-serif; 
-            outline: none;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        input:focus {
-            border-color: #000;
-            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
-        }
+    body {
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+        background-color: #f9f9f9;
+    }
 
-        /* Toggle Password Visibility Icon Button */
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            padding: 4px;
-        }
-        .toggle-password:hover {
-            color: #000;
-        }
+    /* NAVBAR */
 
-        button { 
-            padding: 10px; 
-            background: #000; 
-            color: #fff; 
-            border: none; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            margin-top: 10px; 
-            font-weight: 500; 
-            font-family: 'Inter', sans-serif; 
-            transition: background 0.2s, transform 0.1s;
-        }
-        button:hover {
-            background: #222;
-        }
-        button:active {
-            transform: scale(0.98);
-        }
+    nav {
+        width: 100%;
+        height: 60px;
+        background: #000;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+    }
 
-        h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-family: 'Sen', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-        
-        .login-link {
-            text-align: center;
-            font-size: 13px;
-            color: #666;
-            margin-top: 5px;
-        }
-        .login-link a {
-            color: #000;
-            font-weight: 600;
-            text-decoration: underline;
-        }
+    .logo {
+        font-family: 'League Gothic', sans-serif;
+        font-size: 28px;
+        letter-spacing: 1.5px;
+        text-transform: capitalize;
+    }
 
-        /* Modern Floating Toast Notification Banner */
-        .toast-banner {
-            position: fixed;
-            top: 20px;
-            right: -300px;
-            background-color: #28a745;
-            color: #fff;
-            padding: 14px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
+    .nav-link {
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        border: 1px solid #fff;
+        padding: 6px 12px;
+        border-radius: 4px;
+    }
+
+    .nav-link:hover {
+        background: #fff;
+        color: #000;
+    }
+
+    /* MAIN CONTAINER */
+
+    .container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* FORM */
+
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 360px;
+        gap: 15px;
+        border: 2px solid #000;
+        padding: 35px;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        position: relative;
+    }
+
+    .label-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* PASSWORD INFO */
+
+    .info-star {
+        color: #d9534f;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        position: relative;
+    }
+
+    .info-star:hover::after {
+        content: "Password must be at least 8 characters long and include a mix of letters, numbers, and symbols.";
+        position: absolute;
+        bottom: 125%;
+        left: 0;
+        width: 220px;
+        background-color: #000;
+        color: #fff;
+        padding: 8px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 1.4;
+        z-index: 10;
+    }
+
+    /* INPUT */
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: 'Inter', sans-serif;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+    }
+
+    /* SHOW / HIDE PASSWORD */
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        padding: 4px;
+        margin: 0;
+        width: auto;
+    }
+
+    .toggle-password:hover {
+        background: none;
+        color: #000;
+    }
+
+    /* SUBMIT BUTTON */
+
+    .submit-btn {
+        padding: 10px;
+        background: #000;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-top: 10px;
+        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .submit-btn:hover {
+        background: #222;
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-family: 'Sen', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .login-link {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .login-link a {
+        color: #000;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+
+    /* =========================
+       TOP RIGHT TOAST MESSAGES
+    ========================== */
+
+    #toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .toast {
+        min-width: 280px;
+        max-width: 400px;
+
+        padding: 14px 18px;
+
+        color: white;
+        border-radius: 6px;
+
+        font-size: 14px;
+        font-weight: 500;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+        transform: translateX(120%);
+        opacity: 0;
+
+        animation: slideIn 0.4s forwards;
+    }
+
+    .toast.success {
+        background: #28a745;
+    }
+
+    .toast.error {
+        background: #dc3545;
+    }
+
+    .toast.warning {
+        background: #e6a700;
+    }
+
+    .toast.info {
+        background: #333;
+    }
+
+    @keyframes slideIn {
+
+        from {
+            transform: translateX(120%);
             opacity: 0;
         }
-        .toast-banner.show {
-            right: 20px;
+
+        to {
+            transform: translateX(0);
             opacity: 1;
         }
-    </style>
+
+    }
+
+    @keyframes slideOut {
+
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        to {
+            transform: translateX(120%);
+            opacity: 0;
+        }
+
+    }
+
+
+    /* MOBILE */
+
+    @media (max-width: 500px) {
+
+        nav {
+            padding: 0 15px;
+        }
+
+        form {
+            width: 90%;
+            padding: 25px;
+        }
+
+        #toast-container {
+            left: 15px;
+            right: 15px;
+        }
+
+        .toast {
+            min-width: 100%;
+            max-width: 100%;
+        }
+
+    }
+
+</style>
+
+
 </head>
+
 <body>
 
-    <!-- Toast Notification Element -->
-    <div id="toast" class="toast-banner">
-        <span>✓ Registration successful!</span>
-    </div>
+<!-- =========================
+     TOP RIGHT MESSAGES
+========================== -->
 
-    <nav>
-        <div class="logo">College portal.</div>
-        <a href="{% url 'facu_reg' %}" class="nav-link">Register Staff</a>
-    </nav>
+<div id="toast-container">
 
-    <div class="container">
-        <form action="#" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <h2>STUDENT REGISTER</h2>
-            {% if messages %}
-                {% for message in messages %}
-            <div class="{{ message.tags }}">
-                {{ message }}
-            </div>
-                {% endfor %}
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="toast {{ message.tags }}">
+
+            {% if message.tags == "success" %}
+                <span>✓</span>
+
+            {% elif message.tags == "error" %}
+                <span>!</span>
+
+            {% else %}
+                <span>•</span>
+
             {% endif %}
-            
-            <div class="field-group">
-                <label for="{{ form.username.id_for_label }}">Username</label>
-                {{ form.username }}
-                {% for error in form.username.errors %}
-                    <small style="color:red;">{{ error }}</small>
-                {% endfor %}
-            </div>
 
-            <div class="field-group">
-                <label for="{{ form.email.id_for_label }}">Email</label>
-                {{ form.email }}
-                {% for error in form.email.errors %}
-                    <small style="color:red;">{{ error }}</small>
-                {% endfor %}
-            </div>
+            <span>{{ message }}</span>
 
-            <div class="field-group">
-                <div class="label-container">
-                    <label for="{{ form.password1.id_for_label }}">Password</label>
-                    <span class="info-star">*</span>
-                </div>
-                <div class="input-wrapper">
-                    {{ form.password1 }}
-                    <button type="button" id="toggle-btn-1" class="toggle-password">Show</button>
-                </div>
-                {% for error in form.password1.errors %}
-                    <small style="color:red;">{{ error }}</small>
-                {% endfor %}
-            </div>
+        </div>
 
-            <div class="field-group">
-                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-                <div class="input-wrapper">
-                    {{ form.password2 }}
-                    <button type="button" id="toggle-btn-2" class="toggle-password">Show</button>
-                </div>
-                {% for error in form.password2.errors %}
-                    <small style="color:red;">{{ error }}</small>
-                {% endfor %}
-            </div>
+    {% endfor %}
 
-            <button type="submit">Submit</button>
+{% endif %}
 
-            <div class="login-link">
-                Already have an account? <a href="{% url 'login_p' %}">Login here</a>
-            </div>
-        </form>
+
+</div>
+
+<!-- NAVBAR -->
+
+<nav>
+
+
+<div class="logo">
+    College portal.
+</div>
+
+<a href="{% url 'facu_reg' %}" class="nav-link">
+    Register Staff
+</a>
+
+
+</nav>
+
+<!-- STUDENT REGISTRATION -->
+
+<div class="container">
+
+
+<form action=""
+      method="POST"
+      enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <h2>STUDENT REGISTER</h2>
+
+
+    <!-- USERNAME -->
+
+    <div class="field-group">
+
+        <label for="{{ form.username.id_for_label }}">
+            Username
+        </label>
+
+        {{ form.username }}
+
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const toast = document.getElementById('toast');
-            
-            // Password Show/Hide Toggles
-            const pass1 = document.querySelector('input[name="password1"]') || document.getElementById('password1');
-            const toggle1 = document.getElementById('toggle-btn-1');
-            if (pass1 && toggle1) {
-                toggle1.addEventListener('click', function() {
-                    if (pass1.type === 'password') {
-                        pass1.type = 'text';
-                        toggle1.textContent = 'Hide';
+
+    <!-- EMAIL -->
+
+    <div class="field-group">
+
+        <label for="{{ form.email.id_for_label }}">
+            Email
+        </label>
+
+        {{ form.email }}
+
+    </div>
+
+
+    <!-- PASSWORD -->
+
+    <div class="field-group">
+
+        <div class="label-container">
+
+            <label for="{{ form.password1.id_for_label }}">
+                Password
+            </label>
+
+            <span class="info-star">
+                *
+            </span>
+
+        </div>
+
+
+        <div class="input-wrapper">
+
+            {{ form.password1 }}
+
+            <button type="button"
+                    id="toggle-btn-1"
+                    class="toggle-password">
+
+                Show
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONFIRM PASSWORD -->
+
+    <div class="field-group">
+
+        <label for="{{ form.password2.id_for_label }}">
+            Confirm Password
+        </label>
+
+
+        <div class="input-wrapper">
+
+            {{ form.password2 }}
+
+            <button type="button"
+                    id="toggle-btn-2"
+                    class="toggle-password">
+
+                Show
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUBMIT -->
+
+    <button type="submit"
+            class="submit-btn">
+
+        Submit
+
+    </button>
+
+
+    <div class="login-link">
+
+        Already have an account?
+
+        <a href="{% url 'login_p' %}">
+            Login here
+        </a>
+
+    </div>
+
+</form>
+
+
+</div>
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =========================
+           PASSWORD SHOW / HIDE
+        ========================== */
+
+        const pass1 = document.querySelector(
+            'input[name="password1"]'
+        );
+
+        const toggle1 = document.getElementById(
+            "toggle-btn-1"
+        );
+
+
+        if (pass1 && toggle1) {
+
+            toggle1.addEventListener(
+                "click",
+                function () {
+
+                    if (pass1.type === "password") {
+
+                        pass1.type = "text";
+
+                        toggle1.textContent = "Hide";
+
                     } else {
-                        pass1.type = 'password';
-                        toggle1.textContent = 'Show';
-                    }
-                });
-            }
 
-            const pass2 = document.querySelector('input[name="password2"]') || document.getElementById('password2');
-            const toggle2 = document.getElementById('toggle-btn-2');
-            if (pass2 && toggle2) {
-                toggle2.addEventListener('click', function() {
-                    if (pass2.type === 'password') {
-                        pass2.type = 'text';
-                        toggle2.textContent = 'Hide';
+                        pass1.type = "password";
+
+                        toggle1.textContent = "Show";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+
+        const pass2 = document.querySelector(
+            'input[name="password2"]'
+        );
+
+        const toggle2 = document.getElementById(
+            "toggle-btn-2"
+        );
+
+
+        if (pass2 && toggle2) {
+
+            toggle2.addEventListener(
+                "click",
+                function () {
+
+                    if (pass2.type === "password") {
+
+                        pass2.type = "text";
+
+                        toggle2.textContent = "Hide";
+
                     } else {
-                        pass2.type = 'password';
-                        toggle2.textContent = 'Show';
+
+                        pass2.type = "password";
+
+                        toggle2.textContent = "Show";
+
                     }
-                });
-            }
 
-            // Check if backend message contains success style/tag to trigger the unique toast effect only once
-            const successMsg = document.querySelector('.success');
-            const hasShownToast = sessionStorage.getItem('student_reg_toast_shown');
+                }
+            );
 
-            if (successMsg && !hasShownToast) {
-                sessionStorage.setItem('student_reg_toast_shown', 'true');
+        }
 
-                setTimeout(function() {
-                    toast.classList.add('show');
+
+
+        /* =========================
+           AUTO HIDE TOAST
+        ========================== */
+
+        const toasts =
+            document.querySelectorAll(".toast");
+
+
+        toasts.forEach(function (toast) {
+
+            setTimeout(function () {
+
+                toast.style.animation =
+                    "slideOut 0.4s forwards";
+
+
+                setTimeout(function () {
+
+                    toast.remove();
+
                 }, 400);
 
-                setTimeout(function() {
-                    toast.classList.remove('show');
-                }, 5000);
-            }
+
+            }, 4000);
+
         });
-    </script>
+
+
+    }
+);
+
+</script>
 
 </body>
 </html>

@@ -45,7 +45,7 @@ def faculty_reg(request):
             )
 
             messages.success(request, "Faculty registered successfully.")
-            return redirect('login_p')
+            return redirect('pend_page')
 
         else:
             messages.error(request, "Registration failed. Please correct the errors below.")
@@ -71,9 +71,18 @@ def login_page(request):
             messages.success(request, "Login successful.")
 
             if student_profile.objects.filter(user=user).exists():
+                messages.success(request,"Succesfully logged in")
                 return redirect('stud_dash')
 
             elif faculty_profile.objects.filter(user=user).exists():
+                faculty=faculty_profile.objects.get(user=user)
+                if not faculty.is_approved:
+                    messages.warning(
+                        request,"your account is not verified"
+                    )
+                    return redirect('pend_page')
+                login(request,user)
+                messages.success(request,"Successfully logged in")
                 return redirect('facu_dash')
 
             else:
@@ -90,3 +99,6 @@ def logout_page(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect('login_p')
+
+def pending(request):
+    return render(request,'accounts/pending.html')

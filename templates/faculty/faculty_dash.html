@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Faculty Portal - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background-color: #f9f9f9; }
         
@@ -36,10 +37,11 @@
         }
 
         /* Sidebar styling */
-        aside { width: 250px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
-        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 30px; text-align: center; }
-        aside nav { display: flex; flex-direction: column; gap: 15px; }
-        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid transparent; }
+        aside { width: 260px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 25px; text-align: center; }
+        aside nav { display: flex; flex-direction: column; gap: 10px; }
+        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px 12px; border-radius: 4px; border: 1px solid transparent; display: flex; align-items: center; gap: 10px; }
+        aside a i { width: 16px; text-align: center; }
         aside a:hover, aside a.active { border: 1px solid #000; background: #000; color: #fff; }
 
         /* Main content area */
@@ -47,10 +49,10 @@
         header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
         header h1 { margin: 0; font-size: 24px; font-family: 'Sen', sans-serif; font-weight: 700; }
 
-        .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; }
-        .card h3 { margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700; }
+        .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+        .card h3 { margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 
-        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 15px; }
+        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 15px; text-align: center; }
         .action-btn:hover { opacity: 0.8; }
     </style>
 </head>
@@ -65,11 +67,14 @@
         <aside>
             <h2>FACULTY PORTAL</h2>
             <nav>
-                <a href="{% url 'facu_dash' %}" class="active">Dashboard</a>
-                <a href="{% url 'facu_profile' %}">My Profile</a>
-                <a href="">Students Details</a>
-                <a href="">Notifications</a>
-                <a href="{% url 'logout' %}" style="margin-top: auto; color: #d9534f; border-color: #d9534f;">Logout</a>
+                <a href="{% url 'facu_dash' %}" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="{% url 'facu_profile' %}"><i class="fa-solid fa-user"></i> My Profile</a>
+                <a href="{% url 'f_manage' %}"><i class="fa-solid fa-users-gear"></i> Student Management</a>
+                <a href="{% url 'announcement' %}"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+                <a href="{% url 'f_notification' %}"><i class="fa-solid fa-bell"></i> Notifications</a>
+                <a href="{% url 'campus_connect' %}"><i class="fa-solid fa-network-wired"></i> Campus Connect</a>
+                <a href=""><i class="fa-solid fa-file-lines"></i> Templates</a>
+                <a href="{% url 'logout' %}" style="margin-top: 20px; color: #d9534f; border-color: #d9534f;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </nav>
         </aside>
 
@@ -80,21 +85,55 @@
                     <span style="font-weight: 600; font-size: 14px;">Portal Active</span>
                 </header>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+                    
                     <div class="card">
-                        <h3>My Profile</h3>
-                        <p style="font-size: 14px; color: #666;">View and update your personal and academic credentials.</p>
+                        <div>
+                            <h3><i class="fa-solid fa-user"></i> My Profile</h3>
+                            <p style="font-size: 14px; color: #666;">View and update your personal and academic credentials.</p>
+                        </div>
                         <a href="{% url 'facu_profile' %}" class="action-btn">Open Profile</a>
                     </div>
+
                     <div class="card">
-                        <h3>Students Details</h3>
-                        <p style="font-size: 14px; color: #666;">Access student lists, performance metrics, and information.</p>
-                        <a href="" class="action-btn">View Students</a>
+                        <div>
+                            <h3><i class="fa-solid fa-users-gear"></i> Student Management</h3>
+                            <p style="font-size: 14px; color: #666;">Manage student rosters, grades, evaluations, and performance tracks.</p>
+                        </div>
+                        <a href="{% url 'f_manage' %}" class="action-btn">Manage Students</a>
                     </div>
+
                     <div class="card">
-                        <h3>Notifications</h3>
-                        <p style="font-size: 14px; color: #666;">Check system announcements and institutional alerts.</p>
-                        <a href="" class="action-btn">View Alerts</a>
+                        <div>
+                            <h3><i class="fa-solid fa-bullhorn"></i> Announcements</h3>
+                            <p style="font-size: 14px; color: #666;">Broadcast important updates, assignments, and class messages.</p>
+                        </div>
+                        <a href="{% url 'announcement' %}" class="action-btn">Post Announcement</a>
                     </div>
+
+                    <div class="card">
+                        <div>
+                            <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+                            <p style="font-size: 14px; color: #666;">Check system alerts, approvals, and institutional reminders.</p>
+                        </div>
+                        <a href="{% url 'f_notification' %}" class="action-btn">View Alerts</a>
+                    </div>
+
+                    <div class="card">
+                        <div>
+                            <h3><i class="fa-solid fa-network-wired"></i> Campus Connect</h3>
+                            <p style="font-size: 14px; color: #666;">Collaborate, message, and network with other faculty and departments.</p>
+                        </div>
+                        <a href="" class="action-btn">Open Connect</a>
+                    </div>
+
+                    <div class="card">
+                        <div>
+                            <h3><i class="fa-solid fa-file-lines"></i> Templates</h3>
+                            <p style="font-size: 14px; color: #666;">Access document templates, question papers, and report formats.</p>
+                        </div>
+                        <a href="" class="action-btn">Browse Templates</a>
+                    </div>
+
                 </div>
             </div>
         </main>

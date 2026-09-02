@@ -21,5 +21,16 @@ from . import views
 urlpatterns = [
     path('facultydash/',views.dashboard,name='facu_dash' ),
     path('f_profile/',views.f_profile,name='facu_profile'),
-    path('edit_f_profile/',views.f_edit_profile,name='f_edit')
+    path('edit_f_profile/',views.f_edit_profile,name='f_edit'),
+    path('studentmanagment/',views.stud_manage,name='f_manage'),
+    path('announcement/',views.announcement,name='announcement'),
+    path('preview/<int:id>/',views.preview,name='preview'),
+    path('preview/edit/<int:id>',views.edit_pro_f,name='profile_edit'),
+    path('connect/',views.campus_connect,name='campus_connect'),
+    path('notifications/',views.notification,name='f_notification'),
+    
+
+
+
+
 ]

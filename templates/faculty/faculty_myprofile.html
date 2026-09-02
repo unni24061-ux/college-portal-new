@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Faculty Portal - My Profile</title>
     <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background-color: #f9f9f9; }
         
@@ -36,10 +37,11 @@
         }
 
         /* Sidebar styling */
-        aside { width: 250px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
-        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 30px; text-align: center; }
-        aside nav { display: flex; flex-direction: column; gap: 15px; }
-        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid transparent; }
+        aside { width: 260px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 25px; text-align: center; }
+        aside nav { display: flex; flex-direction: column; gap: 10px; }
+        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px 12px; border-radius: 4px; border: 1px solid transparent; display: flex; align-items: center; gap: 10px; }
+        aside a i { width: 16px; text-align: center; }
         aside a:hover, aside a.active { border: 1px solid #000; background: #000; color: #fff; }
 
         /* Main content area */
@@ -50,8 +52,28 @@
         .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; }
         .card h3 { margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700; }
 
-        /* Display grid replacing input boxes */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        /* Profile Layout Container */
+        .profile-container {
+            display: flex;
+            gap: 35px;
+            align-items: flex-start;
+        }
+
+        .profile-pic-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            flex: 1;
+        }
+
         .field-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 13px; font-weight: 600; color: #333; }
         
@@ -87,7 +109,7 @@
             max-height: 85vh;
             background: white;
             padding: 25px;
-            border-radius: 12px; /* Curves all corners of the modal */
+            border-radius: 12px;
             position: relative;
             overflow-y: auto;
             box-sizing: border-box;
@@ -95,7 +117,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .modal-content input {
+        .modal-content input, .modal-content select {
             width: 100%;
             margin-bottom: 12px;
             padding: 8px 10px;
@@ -104,6 +126,8 @@
             border-radius: 4px;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
+            background: #fff;
+            outline: none;
         }
 
         .modal-content label {
@@ -122,14 +146,16 @@
             cursor: pointer;
             font-weight: bold;
         }
+        
         .profile-image {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #000;
         }
 
-        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 20px; }
+        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 25px; }
         .action-btn:hover { opacity: 0.8; }
     </style>
 </head>
@@ -144,49 +170,62 @@
         <aside>
             <h2>FACULTY PORTAL</h2>
             <nav>
-                <a href="{% url 'facu_dash' %}">Dashboard</a>
-                <a href="{% url 'facu_profile' %}" class="active">My Profile</a>
-                <a href="">Students Details</a>
-                <a href="">Notifications</a>
-                <a href="{% url 'logout' %}" style="margin-top: auto; color: #d9534f; border-color: #d9534f;">Logout</a>
+                <a href="{% url 'facu_dash' %}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="{% url 'facu_profile' %}" class="active"><i class="fa-solid fa-user"></i> My Profile</a>
+                <a href="{% url 'f_manage' %}"><i class="fa-solid fa-users-gear"></i> Student Management</a>
+                <a href="{% url 'announcement' %}"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+                <a href="{% url 'f_notification' %}"><i class="fa-solid fa-bell"></i> Notifications</a>
+                <a href="{% url 'campus_connect' %}"><i class="fa-solid fa-network-wired"></i> Campus Connect</a>
+                <a href=""><i class="fa-solid fa-file-lines"></i> Templates</a>
+                <a href="{% url 'logout' %}" style="margin-top: 20px; color: #d9534f; border-color: #d9534f;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </nav>
         </aside>
 
         <main>
             <header>
                 <h1>My Profile</h1>
-                <span style="font-weight: 600; font-size: 14px;">Faculty ID: {{ profile.user.username}}</span>
+                <span style="font-weight: 600; font-size: 14px;">Faculty ID: {{ profile.user.username }}</span>
             </header>
             
             <div class="card">
                 <h3>Personal Information</h3>
-                <div class="form-grid">
-                    {% if profile.profile_image %}
-                    <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="profile-image">
-                {% else %}
-                    <img src="/media/default.png" alt="Profile Image" class="profile-image">
-                {% endif %}
-                    <div class="field-group">
-                        <label>Full Name</label>
-                        <div class="info-value">{{ profile.fullname|default:"--" }}</div>
+                
+                <div class="profile-container">
+                    <!-- Profile Picture Column -->
+                    <div class="profile-pic-section">
+                        {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="profile-image">
+                        {% else %}
+                            <img src="/media/default.png" alt="Profile Image" class="profile-image">
+                        {% endif %}
+                        <span style="font-size: 12px; font-weight: 600; color: #666;">Profile Photo</span>
                     </div>
-                    <div class="field-group">
-                        <label>Email Address</label>
-                        <div class="info-value">{{ profile.user.email|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Designation</label>
-                        <div class="info-value">{{ profile.designation|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Department</label>
-                        <div class="info-value">{{ profile.department|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Phone Number</label>
-                        <div class="info-value">{{ profile.ph_no|default:"--" }}</div>
+
+                    <!-- Details Grid Column -->
+                    <div class="form-grid">
+                        <div class="field-group">
+                            <label>Full Name</label>
+                            <div class="info-value">{{ profile.fullname|default:"--" }}</div>
+                        </div>
+                        <div class="field-group">
+                            <label>Email Address</label>
+                            <div class="info-value">{{ profile.user.email|default:"--" }}</div>
+                        </div>
+                        <div class="field-group">
+                            <label>Designation</label>
+                            <div class="info-value">{{ profile.designation|default:"--" }}</div>
+                        </div>
+                        <div class="field-group">
+                            <label>Department</label>
+                            <div class="info-value">{{ profile.department|default:"--" }}</div>
+                        </div>
+                        <div class="field-group" style="grid-column: span 2;">
+                            <label>Phone Number</label>
+                            <div class="info-value" style="width: 50%;">{{ profile.ph_no|default:"--" }}</div>
+                        </div>
                     </div>
                 </div>
+
                 <button type="button" id="openModal" class="action-btn">Edit Profile</button>
             </div>
         </main>
@@ -201,7 +240,7 @@
             <form method="POST" action="{% url 'f_edit' %}" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                 <div style="text-align: center; margin-bottom: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
                     {% if profile.profile_image %}
                         <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="profile-image">
                     {% else %}
@@ -213,7 +252,7 @@
                 </div>
 
                 <label>Full Name</label>
-                <input type="text" name="fullname" value="{{ profile.user.get_full_name }}">
+                <input type="text" name="fullname" value="{{ profile.fullname }}">
 
                 <label>Email Address</label>
                 <input type="email" name="email" value="{{ profile.user.email }}">
@@ -222,7 +261,14 @@
                 <input type="text" name="designation" value="{{ profile.designation | default:'' }}">
 
                 <label>Department</label>
-                <input type="text" name="department" value="{{ profile.department }}">
+                <select name="department">
+                    <option value="CSE" {% if profile.department == 'CSE' %}selected{% endif %}>CSE</option>
+                    <option value="IT" {% if profile.department == 'IT' %}selected{% endif %}>IT</option>
+                    <option value="EEE" {% if profile.department == 'EEE' %}selected{% endif %}>EEE</option>
+                    <option value="EC" {% if profile.department == 'EC' %}selected{% endif %}>EC</option>
+                    <option value="MECH" {% if profile.department == 'MECH' %}selected{% endif %}>MECH</option>
+                    <option value="CIVIL" {% if profile.department == 'CIVIL' %}selected{% endif %}>CIVIL</option>
+                </select>
 
                 <label>Phone Number</label>
                 <input type="text" name="phone_number" value="{{ profile.ph_no |default:'' }}">

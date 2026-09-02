@@ -27,5 +27,6 @@ urlpatterns = [
 
     path('login/',views.login_page,name='login_p'),
     path('logout/', views.logout_page, name='logout'),
+    path('pending/',views.pending,name='pend_page')
     
 ]

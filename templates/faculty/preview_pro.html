@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Navbar styling */
+        nav.top-nav {
+            width: 100%;
+            height: 60px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .logo {
+            font-family: 'League Gothic', sans-serif;
+            font-size: 28px;
+            letter-spacing: 1.5px;
+            text-transform: capitalize;
+        }
+
+        /* Main content full screen area */
+        .profile-container {
+            width: 100%;
+            flex: 1;
+            background: #f9f9f9;
+            padding: 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Action Bar (Back & Edit Buttons) */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        /* Back & Edit Buttons */
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #000;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-custom:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #000;
+        }
+
+        .profile-title h2 {
+            margin: 0 0 8px 0;
+            font-family: 'Sen', sans-serif;
+            font-size: 26px;
+            color: #000;
+        }
+
+        .profile-title p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-group.full-width {
+            grid-column: span 3;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            padding: 12px 15px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            box-sizing: border-box;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .field-group.full-width {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .field-group.full-width {
+                grid-column: span 1;
+            }
+            .profile-container {
+                padding: 20px;
+            }
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 450px;
+            max-height: 85vh;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+            overflow-y: auto;
+            box-sizing: border-box;
+            border: 2px solid #000;
+        }
+
+        .modal-content input, .modal-content select {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            outline: none;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+        }
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Black Navbar with Logo -->
+    <nav class="top-nav">
+        <div class="logo">College portal.</div>
+        <div class="welname">{{ student.user.username }}</div>
+    </nav>
+
+    <!-- Main Full-Screen Content Area -->
+    <div class="profile-container">
+        <!-- Top Action Bar (Back & Edit Buttons) -->
+        <div class="action-bar">
+            <a href="{% url 'f_manage'%}" class="btn-custom">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+            <button type="button" id="openModal" class="btn-custom">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+            </button>
+        </div>
+
+        <!-- Profile Top Section -->
+        <div class="profile-header">
+            {% if student.profile_image %}
+                <img src="{{ student.profile_image.url }}" alt="Profile Image" class="profile-image">
+            {% else %}
+                <img src="/media/default.png" alt="Profile Image" class="profile-image">
+            {% endif %}          
+            <div class="profile-title">
+                <h2>{{ student.fullname }}</h2>
+                <p>Roll No: {{ student.roll_no }} | KTU ID: {{ student.ktu_id }}</p>
+            </div>
+        </div>
+
+        <!-- Information Fields (Full Screen Grid Layout) -->
+        <div class="form-grid">
+            <div class="field-group">
+                <label>Full Name</label>
+                <div class="info-value">{{ student.fullname }}</div>
+            </div>
+            <div class="field-group">
+                <label>Email Address</label>
+                <div class="info-value">{{ student.user.email }}</div>
+            </div>
+            <div class="field-group">
+                <label>Phone Number</label>
+                <div class="info-value">{{ student.ph_no }}</div>
+            </div>
+            <div class="field-group">
+                <label>Department</label>
+                <div class="info-value">{{ student.department }}</div>
+            </div>
+            <div class="field-group">
+                <label>Semester</label>
+                <div class="info-value">{{ student.sem }}</div>
+            </div>
+            <div class="field-group">
+                <label>Date of Birth</label>
+                <div class="info-value">{{ student.dob }}</div>
+            </div>
+            <div class="field-group">
+                <label>Roll Number</label>
+                <div class="info-value">{{ student.roll_no }}</div>
+            </div>
+            <div class="field-group">
+                <label>KTU ID</label>
+                <div class="info-value">{{ student.ktu_id }}</div>
+            </div>
+            <div class="field-group">
+                <label>CGPA</label>
+                <div class="info-value">{{ student.cgpa }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 style="margin-top: 0; font-family: 'Sen', sans-serif; font-size: 20px;">Edit Profile</h2>
+
+            <form method="POST" action="{% url 'profile_edit' student.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="text-align: center; margin-bottom: 20px;">
+                    {% if student.profile_image %}
+                        <img src="{{ student.profile_image.url }}" alt="Profile Image" class="profile-image">
+                    {% else %}
+                        <img src="/media/default.png" alt="Profile Image" class="profile-image">
+                    {% endif %}
+                    <br><br>
+                    <label>Change Profile Picture</label>
+                    <input type="file" name="profile_image" accept="image/*">
+                </div>
+                
+                <label>Full Name</label>
+                <input type="text" name="fullname" value="{{ student.fullname }}">
+
+                <label>Department</label>
+                <select name="department">
+                    <option value="CSE" {% if student.department == 'CSE' %}selected{% endif %}>CSE</option>
+                    <option value="IT" {% if student.department == 'IT' %}selected{% endif %}>IT</option>
+                    <option value="EEE" {% if student.department == 'EEE' %}selected{% endif %}>EEE</option>
+                    <option value="EC" {% if student.department == 'EC' %}selected{% endif %}>EC</option>
+                    <option value="MECH" {% if student.department == 'MECH' %}selected{% endif %}>MECH</option>
+                    <option value="CIVIL" {% if student.department == 'CIVIL' %}selected{% endif %}>CIVIL</option>
+                </select>
+                <label>Semester</label>
+
+                <select name="sem">
+
+                    <option value="">Select Semester</option>
+
+                    <option value="1"
+                        {% if student.sem == 1 %}selected{% endif %}>
+                        Semester 1
+                    </option>
+
+                    <option value="2"
+                        {% if student.sem == 2 %}selected{% endif %}>
+                        Semester 2
+                    </option>
+
+                    <option value="3"
+                        {% if student.sem == 3 %}selected{% endif %}>
+                        Semester 3
+                    </option>
+
+                    <option value="4"
+                        {% if student.sem == 4 %}selected{% endif %}>
+                        Semester 4
+                    </option>
+
+                    <option value="5"
+                        {% if student.sem == 5 %}selected{% endif %}>
+                        Semester 5
+                    </option>
+
+                    <option value="6"
+                        {% if student.sem == 6 %}selected{% endif %}>
+                        Semester 6
+                    </option>
+
+                    <option value="7"
+                        {% if student.sem == 7 %}selected{% endif %}>
+                        Semester 7
+                    </option>
+
+                    <option value="8"
+                        {% if student.sem == 8 %}selected{% endif %}>
+                        Semester 8
+                    </option>
+
+                </select>
+
+                
+                <label>KTU ID</label>
+                <input type="text" name="ktu_id" value="{{ student.ktu_id }}">
+
+                <label>Phone Number</label>
+                <input type="text" name="ph_no" value="{{ student.ph_no }}">
+
+                <label>Roll Number</label>
+                <input type="number" name="roll_no" value="{{ student.roll_no | default_if_none:'' }}">
+
+                <label>Date of Birth</label>
+                <input type="date" name="dob" value="{{ student.dob|date:'Y-m-d' }}">
+
+                <label>CGPA</label>
+                <input type="number" step="0.01" name="cgpa" value="{{ student.cgpa | default_if_none:'' }}">
+
+                <button type="submit" class="action-btn" style="width: 100%; margin-top: 10px; border-radius: 6px;">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Toggle Script -->
+    <script>
+        const modal = document.getElementById("editModal");
+        const openBtn = document.getElementById("openModal");
+        const closeBtn = document.querySelector(".close");
+
+        openBtn.onclick = function() {
+            modal.style.display = "flex";
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty Portal - Student Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background-color: #f9f9f9; }
+        
+        /* Navbar styling */
+        nav.top-nav {
+            width: 100%;
+            height: 60px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .logo {
+            font-family: 'League Gothic', sans-serif;
+            font-size: 28px;
+            letter-spacing: 1.5px;
+            text-transform: capitalize;
+        }
+
+        /* Layout wrapper below navbar */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* Sidebar styling */
+        aside { width: 260px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 25px; text-align: center; }
+        aside nav { display: flex; flex-direction: column; gap: 10px; }
+        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px 12px; border-radius: 4px; border: 1px solid transparent; display: flex; align-items: center; gap: 10px; }
+        aside a i { width: 16px; text-align: center; }
+        aside a:hover, aside a.active { border: 1px solid #000; background: #000; color: #fff; }
+
+        /* Main content area */
+        main { flex: 1; display: flex; flex-direction: column; padding: 35px; box-sizing: border-box; overflow-y: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 25px; }
+        header h1 { margin: 0; font-size: 24px; font-family: 'Sen', sans-serif; font-weight: 700; }
+
+        /* Control Bar (Search & Multiple Filters Form) */
+        .control-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .control-bar input, .control-bar select, .filter-btn {
+            padding: 10px 15px;
+            border: 2px solid #000;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background: #fff;
+            outline: none;
+            cursor: pointer;
+        }
+        .control-bar input {
+            flex: 1;
+            min-width: 220px;
+            cursor: text;
+        }
+        .control-bar select {
+            width: 170px;
+        }
+        .filter-btn {
+            background: #000;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Student Table Styling - View Only Cursor */
+        .table-container {
+            border: 2px solid #000;
+            border-radius: 8px;
+            background: #fff;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+        }
+        th, td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #000;
+            cursor: default;
+        }
+        th {
+            background: #000;
+            color: #fff;
+            font-family: 'Sen', sans-serif;
+            font-weight: 700;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background-color: #f4f4f4;
+        }
+
+        /* Action Profile Button */
+        .profile-btn {
+            padding: 6px 12px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+        .profile-btn:hover {
+            opacity: 0.8;
+        }
+        .profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000;
+    }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="logo">College portal.</div>
+        <div class="welname">Hello {{request.user}}</div>
+    </nav>
+
+    <div class="app-layout">
+        <aside>
+            <h2>FACULTY PORTAL</h2>
+            <nav>
+                <a href="{% url 'facu_dash' %}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="{% url 'facu_profile' %}"><i class="fa-solid fa-user"></i> My Profile</a>
+                <a href="" class="active"><i class="fa-solid fa-users-gear"></i> Student Management</a>
+                <a href="{% url 'announcement' %}"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+                <a href="{% url 'f_notification' %}"><i class="fa-solid fa-bell"></i> Notifications</a>
+                <a href="{% url 'campus_connect' %}"><i class="fa-solid fa-network-wired"></i> Campus Connect</a>
+                <a href=""><i class="fa-solid fa-file-lines"></i> Templates</a>
+                <a href="{% url 'logout' %}" style="margin-top: 20px; color: #d9534f; border-color: #d9534f;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main>
+            <header>
+                <h1>Student Management</h1>
+                <span style="font-weight: 600; font-size: 14px;">Total Students: {{ students|length }}</span>
+            </header>
+
+            <!-- Search and Multi-Filter Server-Side Form Control Bar -->
+            <form method="GET" action="" class="control-bar">
+                <input type="text" name="search" placeholder="Search by name, roll no, or email..." value="{{ request.GET.search }}">
+                
+                <select name="sem">
+                    <option value="">All Semesters</option>
+                    <option value="1" {% if request.GET.sem == '1' %}selected{% endif %}>Semester 1</option>
+                    <option value="2" {% if request.GET.sem == '2' %}selected{% endif %}>Semester 2</option>
+                    <option value="3" {% if request.GET.sem == '3' %}selected{% endif %}>Semester 3</option>
+                    <option value="4" {% if request.GET.sem == '4' %}selected{% endif %}>Semester 4</option>
+                    <option value="5" {% if request.GET.sem == '5' %}selected{% endif %}>Semester 5</option>
+                    <option value="6" {% if request.GET.sem == '6' %}selected{% endif %}>Semester 6</option>
+                    <option value="7" {% if request.GET.sem == '7' %}selected{% endif %}>Semester 7</option>
+                    <option value="8" {% if request.GET.sem == '8' %}selected{% endif %}>Semester 8</option>
+                </select>
+
+                <select name="department">
+                    <option value="">All Departments</option>
+                    <option value="CSE" {% if request.GET.department == 'CSE' %}selected{% endif %}>CSE</option>
+                    <option value="IT" {% if request.GET.department == 'IT' %}selected{% endif %}>IT</option>
+                    <option value="EEE" {% if request.GET.department == 'EEE' %}selected{% endif %}>EEE</option>
+                    <option value="EC" {% if request.GET.department == 'EC' %}selected{% endif %}>EC</option>
+                    <option value="MECH" {% if request.GET.department == 'MECH' %}selected{% endif %}>MECH</option>
+                    <option value="CIVIL" {% if request.GET.department == 'CIVIL' %}selected{% endif %}>CIVIL</option>
+                </select>
+
+                <button type="submit" class="filter-btn"><i class="fa-solid fa-filter"></i> Apply Filter</button>
+                <a href="{% url 'f_manage' %}" class="filter-btn">
+                <i class="fa-solid fa-xmark"></i>
+                    Clear Filter
+                </a>
+            </form>
+
+            <!-- Student List Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Department</th>
+                            <th>Semester</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    {% for student in students %}
+
+                <tr>
+                    <td>
+                        {% if student.profile_image %}
+                    <img
+                        src="{{ student.profile_image.url }}"
+                        alt="Profile Image"
+                        class="profile-image"
+                    >
+                {% else %}
+                    <img
+                        src="/media/default.png"
+                        alt="Profile Image"
+                        class="profile-image"
+                    >
+                {% endif %}
+                    </td>
+
+                    <td>
+                        <strong>{{ student.roll_no }}</strong>
+                    </td>
+
+                    <td>
+                        {{ student.fullname }}
+                    </td>
+
+                    <td>
+                        {{ student.department }}
+                    </td>
+
+                    <td>
+                        {{ student.sem }}
+                    </td>
+
+                    <td>
+                        {{ student.user.email }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{% url 'preview' student.id %}"
+                            class="profile-btn"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                            View Profile
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="7">
+                        No students found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+                    
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
