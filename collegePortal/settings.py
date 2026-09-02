@@ -20,12 +20,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k*qc8l@9e4ehk*ry8-b@suqh-l52*v*oqxi8qnb^)73twg(m$!'
+SECRET_KEY =  os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "your-local-secret-key"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [ "localhost",
+    "127.0.0.1",
+    ".vercel.app",]
 
 
 # Application definition
@@ -136,8 +141,3 @@ STATICFILES_STORAGE = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    ".vercel.app",
-]
