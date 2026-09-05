@@ -1,152 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Portal - Login</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background-color: #f9f9f9; }
-        
-        /* Navbar styling */
-        nav {
-            width: 100%;
-            height: 60px;
-            background: #000;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
+        * {
             box-sizing: border-box;
-        }
-        .logo {
-            font-family: 'League Gothic', sans-serif;
-            font-size: 28px;
-            letter-spacing: 1.5px;
-            text-transform: capitalize;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Center container for the form */
-        .container {
-            flex: 1;
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #d8dbdf;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            position: relative;
         }
 
-        /* Page Load Fade-In Slide Animation */
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* The main outer form box */
-        form { 
-            display: flex; 
-            flex-direction: column; 
-            width: 360px; 
-            gap: 15px; 
-            border: 2px solid #000; 
-            padding: 35px; 
-            box-sizing: border-box; 
-            border-radius: 8px; 
-            background: #fff; 
-            position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            animation: slideUpFade 0.6s ease forwards;
-        }
-        
-        .field-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 13px; font-weight: 600; color: #333; }
-        
-        /* Input container for Show/Hide Password */
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Input fields with Focus Glow/Border */
-        input { 
-            width: 100%;
-            padding: 10px; 
-            font-size: 14px; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-            font-family: 'Inter', sans-serif; 
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        input:focus {
-            border-color: #000;
-            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
-        }
-        
-        /* Toggle Password Visibility Icon Button */
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            padding: 4px;
-            margin-top: 0 !important;
-        }
-        .toggle-password:hover {
-            color: #000;
-        }
-
-        button { 
-            padding: 10px; 
-            background: #000; 
-            color: #fff; 
-            border: none; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            margin-top: 10px; 
-            font-weight: 500; 
-            font-family: 'Inter', sans-serif; 
-            transition: background 0.2s, transform 0.1s;
-        }
-        button:hover {
-            background: #222;
-        }
-        button:active {
-            transform: scale(0.98);
-        }
-
-        h2 { text-align: center; margin-top: 0; margin-bottom: 20px; font-family: 'Sen', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-        
-        .signup-link {
-            text-align: center;
-            font-size: 13px;
-            color: #666;
-            margin-top: 5px;
-        }
-        .signup-link a {
-            color: #000;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        /* Modern Floating Toast Notification Banner */
+        /* Toast Notification */
         .toast-banner {
             position: fixed;
             top: 20px;
-            right: -300px;
-            background-color: #28a745;
-            color: #fff;
-            padding: 14px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            right: -360px;
+            background-color: #10b981;
+            color: #ffffff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             z-index: 1000;
             transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
             opacity: 0;
@@ -155,45 +52,482 @@
             right: 20px;
             opacity: 1;
         }
+
+        /* Portal Main Window */
+        .portal-card {
+            display: flex;
+            width: calc(100vw - 48px);
+            height: calc(100vh - 48px);
+            max-width: 1280px;
+            max-height: 760px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* Left Panel */
+        .form-panel {
+            flex: 0 0 38%;
+            min-width: 360px;
+            padding: clamp(24px, 4vh, 48px) clamp(28px, 3.5vw, 52px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid #eef0f3;
+            background: #ffffff;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: #111418;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+        .brand-text h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #111418;
+            line-height: 1.1;
+        }
+        .brand-text p {
+            font-size: 12px;
+            color: #6d7580;
+            font-weight: 500;
+        }
+
+        .form-content {
+            margin: auto 0;
+        }
+
+        .form-content h1 {
+            font-size: clamp(32px, 4.2vh, 44px);
+            font-weight: 800;
+            color: #111418;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+        .form-content .subtitle {
+            color: #6d7580;
+            font-size: 14px;
+            margin-bottom: clamp(20px, 3vh, 28px);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 1.8vh, 18px);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .input-group .field-icon {
+            position: absolute;
+            left: 16px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #717680;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .input-group input {
+            width: 100%;
+            height: clamp(46px, 5.4vh, 52px);
+            padding: 0 46px 0 48px;
+            background: #fbfbfc;
+            border: 1.5px solid #e2e4e8;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #111418;
+            outline: none;
+            position: relative;
+            z-index: 1;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-group input:focus {
+            background: #ffffff;
+            border-color: #111418;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #717680;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            z-index: 2;
+        }
+        .toggle-password:hover {
+            color: #111418;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: clamp(46px, 5.4vh, 52px);
+            background: #191c21;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .submit-btn:hover {
+            background: #2b3038;
+        }
+        .submit-btn:active {
+            transform: scale(0.99);
+        }
+
+        .signup-link {
+            text-align: center;
+            font-size: 13px;
+            color: #6d7580;
+        }
+        .signup-link a {
+            color: #111418;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .footer-quote {
+            position: relative;
+            padding-top: 10px;
+        }
+        .footer-quote::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 22px;
+            height: 2.5px;
+            background: #111418;
+            border-radius: 2px;
+        }
+        .footer-quote p {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: #8c939e;
+            line-height: 1.5;
+        }
+
+        /* Right Panel: Image & Text Overlays */
+        .image-panel {
+            flex: 1;
+            height: 100%;
+            background: #eaecee;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 30% center;
+            transform: scale(1.06);
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Overlay Callouts in Blank Canvas Margins */
+        .panel-caption {
+            position: absolute;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Top-Left Overlay */
+        .caption-top-left {
+            top: 36px;
+            left: 40px;
+            max-width: 210px;
+        }
+        .caption-badge {
+            display: inline-block;
+            background: #ffffff;
+            color: #111418;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+        .caption-top-left p {
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #616771;
+            line-height: 1.45;
+        }
+
+        /* Bottom-Left Overlay */
+        .caption-bottom-left {
+            bottom: 36px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        }
+        .stat-number {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111418;
+            line-height: 1.1;
+        }
+        .stat-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #7b828d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Top-Right Overlay */
+        .caption-top-right {
+            top: 36px;
+            right: 40px;
+            text-align: right;
+            max-width: 190px;
+        }
+        .badge-right {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #111418;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+        .caption-top-right p {
+            font-size: 12px;
+            font-weight: 500;
+            color: #616771;
+            line-height: 1.4;
+        }
+
+        /* Bottom-Right Overlay */
+        .caption-bottom-right {
+            bottom: 36px;
+            right: 40px;
+            text-align: right;
+        }
+        .security-badge {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        }
+        .security-badge svg {
+            color: #111418;
+        }
+        .security-badge span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #111418;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Toast Notification Element -->
     <div id="toast" class="toast-banner">
-        <span>✓ Registration successful! You can now log in.</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>Registration successful! You can now log in.</span>
     </div>
 
-    <nav>
-        <div class="logo">College portal.</div>
-    </nav>
-
-    <div class="container">
-        <!-- data-success="true" simulates successful registration trigger -->
-        <form id="login-form" action="#" method="POST" data-success="true" enctype="multipart/form-data">
-            {% csrf_token %}
-            <h2>LOGIN</h2>
-            
-            <div class="field-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-
-            <div class="field-group">
-                <label for="password">Password</label>
-                <div class="input-wrapper">
-                    <input type="password" id="password" name="password" required>
-                    <button type="button" id="toggle-btn" class="toggle-password">Show</button>
+    <main class="portal-card">
+        <!-- Left Panel: Form -->
+        <section class="form-panel">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h2>College Portal</h2>
+                    <p>Your Campus. One Place.</p>
                 </div>
             </div>
 
-            <button type="submit">Submit</button>
+            <div class="form-content">
+                <h1>Welcome Back</h1>
+                <p class="subtitle">Login to access your portal</p>
 
-            <div class="signup-link">
-                Don't have an account? <a href="{% url 'stud_reg' %}">Register here</a>
+                <form id="login-form" action="#" method="POST" data-success="true" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="input-group">
+                        <div class="field-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <input type="text" id="username" name="username" placeholder="Username or Email" required autocomplete="username">
+                    </div>
+
+                    <div class="input-group">
+                        <div class="field-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+                        <button type="button" id="toggle-btn" class="toggle-password" aria-label="Toggle password visibility">
+                            <span id="eyeIcon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">
+                            <span>Login</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+
+                        <div class="signup-link">
+                            Don't have an account? <a href="#">Register here</a>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
+
+            <div class="footer-quote">
+                <p>A Connected Campus<br>A Brighter Tomorrow</p>
+            </div>
+        </section>
+
+        <!-- Right Panel: Image with Text Overlays -->
+        <section class="image-panel">
+            <img src="{% static 'images/login.png' %}?v=4" alt="Portal Illustration">
+
+            <!-- Top Left -->
+            <div class="panel-caption caption-top-left">
+                <span class="caption-badge">Integrated Hub</span>
+                <p>Access schedules, notices, course material, and faculty support in one place.</p>
+            </div>
+
+            <!-- Bottom Left -->
+            <div class="panel-caption caption-bottom-left">
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Access</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Digital Campus</div>
+                </div>
+            </div>
+
+            <!-- Top Right -->
+            <div class="panel-caption caption-top-right">
+                <div class="badge-right">
+                    <span class="badge-dot"></span>
+                    <span>GECI</span>
+                </div>
+                <p>Academic Year 2026-27<br>Portal</p>
+            </div>
+
+            <!-- Bottom Right -->
+            <div class="panel-caption caption-bottom-right">
+                <div class="security-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <span>Encrypted</span>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -201,38 +535,38 @@
             const toast = document.getElementById('toast');
             const passwordInput = document.getElementById('password');
             const toggleBtn = document.getElementById('toggle-btn');
+            const eyeIcon = document.getElementById('eyeIcon');
 
-            // Show / Hide Password Toggle Logic
             toggleBtn.addEventListener('click', function() {
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    toggleBtn.textContent = 'Hide';
-                } else {
-                    passwordInput.type = 'password';
-                    toggleBtn.textContent = 'Show';
-                }
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+
+                eyeIcon.innerHTML = isPassword
+                    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                         <line x1="1" y1="1" x2="23" y2="23"></line>
+                       </svg>`
+                    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                         <circle cx="12" cy="12" r="3"></circle>
+                       </svg>`;
             });
 
-            // Toast Notification Trigger with Session Storage to ensure it triggers ONLY ONCE
             const isRegisteredSuccessfully = form.getAttribute('data-success') === 'true';
             const hasShownToast = sessionStorage.getItem('registration_toast_shown');
             
             if (isRegisteredSuccessfully && !hasShownToast) {
-                // Mark that the toast has now been shown for this session
                 sessionStorage.setItem('registration_toast_shown', 'true');
 
-                // Slide toast into view
                 setTimeout(function() {
                     toast.classList.add('show');
-                }, 400);
+                }, 300);
 
-                // Automatically hide toast after 5 seconds
                 setTimeout(function() {
                     toast.classList.remove('show');
-                }, 5000);
+                }, 4500);
             }
         });
     </script>
-
 </body>
 </html>
