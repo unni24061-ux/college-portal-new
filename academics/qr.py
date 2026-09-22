@@ -43,6 +43,28 @@ def seconds_to_rotation():
     return max(1, ROTATION_SECONDS - int(time.time() % ROTATION_SECONDS))
 
 
+def encode_payload(session):
+    """QR payload shown on the teacher's projected screen.
+
+    Format: ``cpatt:<session_id>:<token>`` — shared contract between the
+    teacher-side QR screen and the student-side scanner.
+    """
+    return f"cpatt:{session.pk}:{session.token}"
+
+
+def decode_payload(payload):
+    """Turn a scanned payload back into (session_id, token) or None."""
+    if not payload:
+        return None
+    parts = payload.strip().split(":")
+    if len(parts) != 3 or parts[0] != "cpatt":
+        return None
+    try:
+        return int(parts[1]), parts[2]
+    except ValueError:
+        return None
+
+
 def verify(session, token):
     """Validate a presented token. Returns (ok, reason)."""
     try:
