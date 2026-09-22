@@ -32,6 +32,7 @@ urlpatterns = [
     path('attendance/<int:pk>/',views.session_display,name='f_session_display'),
     path('grades/',views.grade_entry,name='f_grade'),
     path('grades/save/',views.grade_save,name='f_grade_save'),
+    path('rankings/',views.rankings,name='f_rankings'),
     
 
 

@@ -1,0 +1,89 @@
+{% extends 'faculty/faculty_base.html' %}
+
+{% block title %}Performance Rankings{% endblock %}
+
+{% block faculty_head %}
+<style>
+  .rank-card {
+    border: 3px solid #000;
+    box-shadow: 8px 8px 0 #000;
+    background: #fff;
+    margin-bottom: 2rem;
+  }
+  .rank-card h4 {
+    border-bottom: 3px solid #000;
+    padding: 0.9rem 1.1rem;
+    font-family: "League Gothic", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+  .rank-card table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .rank-card th, .rank-card td {
+    text-align: left;
+    padding: 0.6rem 1.1rem;
+    font-family: "Sen", sans-serif;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .rank-card th {
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: #555;
+    text-transform: uppercase;
+    background: #fff;
+  }
+  .rank-card tr:last-child td { border-bottom: none; }
+  .rb { font-family: "Sen", sans-serif; font-weight: 700; }
+  .rb-1 { background: #ffd100; color: #000; }
+  .rb-2 { background: #d9dde3; color: #000; }
+  .rb-3 { background: #e8a25a; color: #000; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1080px; padding-top: 1rem;">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h1 class="display-5 fw-bold mb-0" style="font-family:'League Gothic'">PERFORMANCE RANKINGS</h1>
+      <p class="mb-0" style="font-family:'Sen';font-size:0.85rem;">Students ranked by credit-weighted CGPA per semester.</p>
+    </div>
+  </div>
+
+  {% for t in tables %}
+  <div class="rank-card">
+    <h4>SEMESTER {{ t.sem }} <span style="float:right;font-family:'Sen';font-size:0.7rem;">{{ t.rows|length }} student{{ t.rows|length|pluralize }}</span></h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Student</th>
+          <th>Roll</th>
+          <th>Department</th>
+          <th>CGPA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in t.rows %}
+        <tr>
+          <td><span class="rb rb-{% if r.rank and r.rank <= 3 %}{{ r.rank }}{% else %}x{% endif %}">{{ r.rank|default:"-" }}</span></td>
+          <td>{{ r.student.fullname }}</td>
+          <td>{{ r.student.roll_no|default:"--" }}</td>
+          <td>{{ r.student.department|default:"--" }}</td>
+          <td>{{ r.cgpa|default:"--" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="color:#777;">No students in this semester.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% empty %}
+  <div class="empty-state">No student records yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

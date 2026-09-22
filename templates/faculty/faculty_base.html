@@ -34,6 +34,7 @@
         <a href="{% url 'f_grade' %}"{% if request.resolver_match.url_name == 'f_grade' %} class="active"{% endif %}><i class="fa-solid fa-file-pen"></i> Grades</a>
         <a href="{% url 'facu_profile' %}"{% if request.resolver_match.url_name == 'facu_profile' %} class="active"{% endif %}><i class="fa-solid fa-user"></i> My Profile</a>
         <a href="{% url 'f_manage' %}"{% if request.resolver_match.url_name == 'f_manage' %} class="active"{% endif %}><i class="fa-solid fa-users-gear"></i> Student Management</a>
+        <a href="{% url 'f_rankings' %}"{% if request.resolver_match.url_name == 'f_rankings' %} class="active"{% endif %}><i class="fa-solid fa-ranking-star"></i> Rankings</a>
         <a href="{% url 'announcement' %}"{% if request.resolver_match.url_name == 'announcement' %} class="active"{% endif %}><i class="fa-solid fa-bullhorn"></i> Announcements</a>
         <a href="{% url 'f_notification' %}"{% if request.resolver_match.url_name == 'f_notification' %} class="active"{% endif %}><i class="fa-solid fa-bell"></i> Notifications</a>
         <a href="{% url 'campus_connect' %}"{% if request.resolver_match.url_name == 'campus_connect' %} class="active"{% endif %}><i class="fa-solid fa-network-wired"></i> Campus Connect</a>
