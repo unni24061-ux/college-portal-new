@@ -1,75 +1,151 @@
-{% extends 'base.html' %}
+{% extends 'students/student_base.html' %}
 
 {% block title %}Student Dashboard{% endblock %}
 
-{% block extra_head %}
+{% block student_head %}
     <style>
-        /* Sidebar styling matching the theme */
-        aside { width: 250px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
-        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 30px; text-align: center; }
-        aside nav { display: flex; flex-direction: column; gap: 15px; }
-        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid transparent; }
-        aside a:hover { border: 1px solid #000; background: #000; color: #fff; }
-
-        /* Cards matching the styled boxes */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; }
-        .card h3 { margin: 0; font-size: 16px; color: #333; font-family: 'Sen', sans-serif; font-weight: 700; }
-        .card .stat { font-size: 28px; font-weight: bold; }
-
-        .action-btn { padding: 8px 12px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: 500; margin-top: 10px; width: fit-content; text-decoration: none; text-align: center; font-family: 'Inter', sans-serif; }
-        .action-btn:hover { opacity: 0.8; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        .stat-card { border: 2px solid #000; padding: 20px 24px; border-radius: 8px; background: #fff; }
+        .stat-card .label { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #6b7280; }
+        .stat-card .value { font-size: 30px; font-weight: 700; font-family: 'Sen', sans-serif; margin-top: 4px; }
+        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .chart-row { grid-template-columns: 1fr; } }
+        .chart-card { min-height: 320px; }
+        .risk-banner { border: 2px solid #dc2626; background: #fef2f2; color: #b91c1c; border-radius: 8px; padding: 14px 20px; font-size: 14px; font-weight: 600; margin-bottom: 24px; }
+        .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .quick-card { border: 2px solid #000; padding: 22px; border-radius: 8px; background: #fff; display: flex; flex-direction: column; gap: 8px; }
+        .quick-card h3 { margin: 0; font-size: 16px; font-family: 'Sen', sans-serif; font-weight: 700; }
+        .quick-card p { margin: 0; font-size: 13px; color: #6b7280; }
     </style>
-{% endblock %}
-
-{% block sidebar %}
-    <h2>STUDENT PORTAL</h2>
-    <nav>
-        <a href="#">Dashboard</a>
-        <a href="{% url 'stud_profile' %}">My Profile</a>
-        <a href="#">Notifications</a>
-        <a href="#">College</a>
-        <a href="#">Certificates</a>
-        <a href="#">Academics</a>
-        <a href="{% url 'logout' %}" style="margin-top: auto; color: #d9534f; border-color: #d9534f;">Logout</a>
-    </nav>
 {% endblock %}
 
 {% block content %}
     <header>
         <h1>Student Dashboard</h1>
-        <span style="font-weight: 600; font-size: 14px;">Portal Active</span>
+        <span style="font-weight: 600; font-size: 14px;">Semester {{ profile.sem|default:"--" }} | {{ profile.department|default:"--" }}</span>
     </header>
 
+    {% if attendance_risk %}
+        <div class="risk-banner">
+            Attendance alert: you are below 75% in
+            {% for r in attendance_risk %}
+                {{ r.code }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            . Check the Attendance page before it affects eligibility.
+        </div>
+    {% endif %}
+
     <div class="dashboard-grid">
-        <div class="card">
-            <h3>My Profile</h3>
-            <div class="stat" style="font-size: 18px; font-weight: 500;">View & Edit Details</div>
-            <a href="{% url 'stud_profile' %}" class="action-btn">Open Profile</a>
+        <div class="stat-card">
+            <div class="label">Overall CGPA</div>
+            <div class="value">{{ overall_cgpa|default:"--" }}</div>
         </div>
-
-        <div class="card">
-            <h3>Notifications</h3>
-            <div class="stat" style="font-size: 18px; font-weight: 500;">System Alerts</div>
-            <a href="#" class="action-btn">View Alerts</a>
+        <div class="stat-card">
+            <div class="label">Attendance</div>
+            <div class="value">{{ attendance_overall|default:"--" }}{% if attendance_overall %}%{% endif %}</div>
         </div>
-
-        <div class="card">
-            <h3>College</h3>
-            <div class="stat" style="font-size: 18px; font-weight: 500;">Campus Information</div>
-            <a href="#" class="action-btn">Explore</a>
+        <div class="stat-card">
+            <div class="label">Semesters Graded</div>
+            <div class="value">{{ gpa_sems|length }}</div>
         </div>
-
-        <div class="card">
-            <h3>Certificates</h3>
-            <div class="stat" style="font-size: 18px; font-weight: 500;">Verified Documents</div>
-            <a href="#" class="action-btn">View Files</a>
-        </div>
-
-        <div class="card">
-            <h3>Academics</h3>
-            <div class="stat" style="font-size: 18px; font-weight: 500;">Courses & Schedule</div>
-            <a href="#" class="action-btn">Manage</a>
+        <div class="stat-card">
+            <div class="label">Badges Earned</div>
+            <div class="value">{{ badge_count }}</div>
         </div>
     </div>
+
+    <div class="chart-row">
+        <div class="card chart-card">
+            <h3>Semester Progress (GPA)</h3>
+            <canvas id="gpaChart" height="220"></canvas>
+        </div>
+        <div class="card chart-card">
+            <h3>Attendance by Subject (%)</h3>
+            <canvas id="attChart" height="220"></canvas>
+        </div>
+    </div>
+
+    <div class="quick-grid">
+        <div class="quick-card">
+            <h3>Grades</h3>
+            <p>View your marks and grades by semester.</p>
+            <a href="{% url 'grade_report' %}" class="action-btn">Open Grades</a>
+        </div>
+        <div class="quick-card">
+            <h3>Attendance</h3>
+            <p>Per-subject history and alerts.</p>
+            <a href="{% url 'attendance_history' %}" class="action-btn">View Attendance</a>
+        </div>
+        <div class="quick-card">
+            <h3>QR Check-in</h3>
+            <p>Scan the live classroom QR to mark yourself present.</p>
+            <a href="{% url 'attendance_scan' %}" class="action-btn">Open Scanner</a>
+        </div>
+        <div class="quick-card">
+            <h3>Badges</h3>
+            <p>Earned achievements, exportable as images.</p>
+            <a href="{% url 'badges' %}" class="action-btn">View Badges</a>
+        </div>
+    </div>
+
+    {{ gpa_sems|json_script:"gpa-data" }}
+    {{ attendance|json_script:"att-data" }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const gpa = JSON.parse(document.getElementById("gpa-data").textContent || "[]");
+            const att = JSON.parse(document.getElementById("att-data").textContent || "[]");
+
+            const ink = "#111418";
+
+            if (gpa.length) {
+                new Chart(document.getElementById("gpaChart"), {
+                    type: "line",
+                    data: {
+                        labels: gpa.map(s => "Sem " + s.sem),
+                        datasets: [{
+                            label: "GPA",
+                            data: gpa.map(s => s.gpa),
+                            borderColor: ink,
+                            backgroundColor: "rgba(17,20,24,0.1)",
+                            fill: true,
+                            tension: 0.25,
+                            pointBackgroundColor: ink
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, max: 10 } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            } else {
+                document.getElementById("gpaChart").parentElement.innerHTML += '<p style="color:#6b7280">No grades recorded yet.</p>';
+            }
+
+            if (att.length) {
+                new Chart(document.getElementById("attChart"), {
+                    type: "bar",
+                    data: {
+                        labels: att.map(a => a.code),
+                        datasets: [{
+                            label: "Attendance %",
+                            data: att.map(a => a.percent),
+                            backgroundColor: att.map(a => a.at_risk ? "#dc2626" : "#111418"),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { min: 0, max: 100, ticks: { callback: v => v + "%" } } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            } else {
+                document.getElementById("attChart").parentElement.innerHTML += '<p style="color:#6b7280">No attendance sessions yet.</p>';
+            }
+        });
+    </script>
 {% endblock %}

@@ -1,0 +1,180 @@
+{% extends 'students/student_base.html' %}
+
+{% block title %}QR Check-in{% endblock %}
+
+{% block student_head %}
+    <style>
+        .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+        video, canvas { width: 100%; border: 2px solid #000; border-radius: 8px; background: #000; }
+        #scannerFeed { display: none; }
+        .status { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; display: none; }
+        .status.success { display: block; background: #ecfdf5; color: #047857; border: 1px solid #10b981; }
+        .status.warn { display: block; background: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+        .status.error { display: block; background: #fef2f2; color: #b91c1c; border: 1px solid #dc2626; }
+        form input, form select { width: 100%; box-sizing: border-box; padding: 10px 12px; margin-bottom: 12px; border: 1px solid #bbb; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 14px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #333; }
+        .hint { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>QR Check-in</h1>
+        <span style="font-weight: 600; font-size: 14px;">Scan the live projected QR to mark attendance</span>
+    </header>
+
+    <div class="layout">
+        <div class="card">
+            <h3>Camera Scanner</h3>
+            <p class="hint">Point your camera at the projector screen. Works best with the auto-rotating classroom QR.</p>
+            <video id="scannerFeed" autoplay muted playsinline></video>
+            <canvas id="scannerCanvas" style="display:none;"></canvas>
+            <button type="button" id="startCamera" class="action-btn">Start Camera</button>
+            <button type="button" id="stopCamera" class="action-btn" style="display:none;">Stop Camera</button>
+            <div id="cameraStatus" class="status"></div>
+        </div>
+
+        <div class="card">
+            <h3>Manual Entry</h3>
+            <p class="hint">You can also paste the scanned QR value (format: <code>cpatt:&lt;session&gt;:&lt;token&gt;</code>) or pick a live session and enter its token.</p>
+
+            <form id="checkinForm" method="post" action="{% url 'attendance_checkin' %}">
+                {% csrf_token %}
+                <p class="hint">Or choose a currently active session:</p>
+                <label for="sessionSelect">Live session</label>
+                <select id="sessionSelect">
+                    <option value="">-- None --</option>
+                    {% for s in active_sessions %}
+                        <option value="{{ s.pk }}">{{ s.subject.code }} – {{ s.subject.name }} (started {{ s.started_at|timesince }} ago)</option>
+                    {% endfor %}
+                </select>
+                <label for="tokenInput">QR value or token</label>
+                <input type="text" id="tokenInput" placeholder="cpatt:123:abcd… or just the token" autocomplete="off">
+                <button type="submit" class="action-btn" style="width:100%; margin-top:4px;">Mark Present</button>
+            </form>
+            <div id="manualStatus" class="status"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script>
+        (function () {
+            const csrfToken = document.cookie.split("; ")
+                .map(p => p.split("=")).find(kv => kv[0] === "csrftoken");
+            const csrf = csrfToken ? csrfToken[1] : "";
+
+            function showStatus(el, kind, msg) {
+                el.className = "status " + kind;
+                el.textContent = msg;
+            }
+
+            async function doCheckin(sessionId, token) {
+                const statusEl = document.getElementById("manualStatus");
+                if (!sessionId || !token) {
+                    showStatus(statusEl, "warn", "Enter a token (or scan a QR).");
+                    return;
+                }
+                const body = new URLSearchParams({ session_id: sessionId, token: token });
+                let res;
+                try {
+                    res = await fetch("{% url 'attendance_checkin' %}", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded", "X-CSRFToken": csrf },
+                        body: body
+                    });
+                } catch (e) {
+                    showStatus(statusEl, "error", "Network problem while checking in.");
+                    return;
+                }
+                const data = await res.json().catch(() => ({}));
+                if (res.ok && data.status === "ok") {
+                    showStatus(statusEl, "success", "Marked present for " + (data.subject || "the session") + ".");
+                } else if (data.code === "already_marked") {
+                    showStatus(statusEl, "warn", "You are already marked present in this session.");
+                } else {
+                    showStatus(statusEl, "error", data.message || "Check-in failed.");
+                }
+            }
+
+            const form = document.getElementById("checkinForm");
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const raw = document.getElementById("tokenInput").value.trim();
+                const parts = raw.split(":");
+                let sessionId = document.getElementById("sessionSelect").value;
+                let token = raw;
+                if (parts.length === 3 && parts[0] === "cpatt") {
+                    sessionId = parts[1];
+                    token = parts[2];
+                }
+                doCheckin(sessionId, token);
+            });
+
+            // ------- camera scanning -------
+            const video = document.getElementById("scannerFeed");
+            const canvas = document.getElementById("scannerCanvas");
+            const ctx = canvas.getContext("2d", { willReadFrequently: true });
+            const startBtn = document.getElementById("startCamera");
+            const stopBtn = document.getElementById("stopCamera");
+            const camStatus = document.getElementById("cameraStatus");
+            let stream = null;
+            let raf = null;
+            let scanning = true;
+
+            function stopStream() {
+                scanning = false;
+                if (raf) cancelAnimationFrame(raf);
+                if (stream) stream.getTracks().forEach(t => t.stop());
+                stream = null;
+                video.style.display = "none";
+                canvas.style.display = "none";
+                startBtn.style.display = "";
+                stopBtn.style.display = "none";
+            }
+
+            startBtn.addEventListener("click", async function () {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    try {
+                        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                        video.srcObject = stream;
+                        video.style.display = "";
+                        canvas.style.display = "none";
+                        startBtn.style.display = "none";
+                        stopBtn.style.display = "";
+                        scanning = true;
+                        await video.play();
+                        tick();
+                    } catch (e) {
+                        showStatus(camStatus, "error", "Camera not available. Use manual entry instead.");
+                    }
+                } else {
+                    showStatus(camStatus, "error", "Camera not supported in this browser. Use manual entry.");
+                }
+            });
+
+            stopBtn.addEventListener("click", stopStream);
+
+            function tick() {
+                if (!scanning) return;
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const result = jsQR(ctx.getImageData(0, 0, canvas.width, canvas.height).data,
+                        canvas.width, canvas.height);
+                    if (result && result.data) {
+                        const parts = result.data.trim().split(":");
+                        if (parts.length === 3 && parts[0] === "cpatt") {
+                            showStatus(camStatus, "success", "QR detected — checking in…");
+                            doCheckin(parts[1], parts[2]);
+                            stopStream();
+                            return;
+                        }
+                    }
+                }
+                raf = requestAnimationFrame(tick);
+            }
+        })();
+    </script>
+{% endblock %}

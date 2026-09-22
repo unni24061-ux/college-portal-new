@@ -1,0 +1,62 @@
+{% extends 'students/student_base.html' %}
+
+{% block title %}Grade Report{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Grade Report</h1>
+        <span style="font-weight: 600; font-size: 14px;">CGPA: {{ overall_cgpa|default:"--" }}</span>
+    </header>
+
+    {% if not sems %}
+        <div class="card">
+            <h3>No grades recorded yet</h3>
+            <p style="color:#6b7280;">Grades appear here once your faculty publishes them.</p>
+        </div>
+    {% endif %}
+
+    {% for sem in sems %}
+        <div class="card" style="margin-bottom: 24px;">
+            <h3>Semester {{ sem.sem }}
+                <span style="float: right; font-size: 14px; color: #111418;">SGPA: {{ sem.gpa }}</span>
+            </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Subject</th>
+                        <th>Credits</th>
+                        <th>Marks</th>
+                        <th>Grade</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for g in sem.grades %}
+                        <tr>
+                            <td>{{ g.subject.code }}</td>
+                            <td>{{ g.subject.name }}</td>
+                            <td>{{ g.subject.credits|default:"--" }}</td>
+                            <td>{{ g.marks|default:"--" }}</td>
+                            <td><b>{{ g.grade }}</b></td>
+                            <td>{{ g.updated_at|date:"Y-m-d" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+
+    {% if sems %}
+        <div class="card">
+            <h3>Summary</h3>
+            <table>
+                <tbody>
+                    <tr><td>Overall CGPA</td><td><b>{{ overall_cgpa }}</b></td></tr>
+                    <tr><td>Total Credits</td><td>{{ total_credits }}</td></tr>
+                    <tr><td>Semesters</td><td>{{ sems|length }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

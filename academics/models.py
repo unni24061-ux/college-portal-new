@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from . import qr
+
 
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -117,6 +119,14 @@ class AttendanceSession(models.Model):
 
     def is_live(self):
         return self.is_active and self.closed_at is None
+
+    def save(self, *args, **kwargs):
+        creating = self._state.adding
+        if kwargs.get("update_fields") is not None:
+            return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        if creating and not self.token:
+            qr.rotate(self)
 
 
 class Attendance(models.Model):

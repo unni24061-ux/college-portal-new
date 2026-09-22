@@ -1,0 +1,65 @@
+{% extends 'students/student_base.html' %}
+
+{% block title %}Attendance History{% endblock %}
+
+{% block student_head %}
+    <style>
+        .risk-banner { border: 2px solid #dc2626; background: #fef2f2; color: #b91c1c; border-radius: 8px; padding: 14px 20px; font-size: 14px; font-weight: 600; margin-bottom: 24px; }
+        .pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .pill.risk { background: #fef2f2; color: #b91c1c; border: 1px solid #dc2626; }
+        .pill.ok { background: #ecfdf5; color: #047857; border: 1px solid #10b981; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Attendance History</h1>
+        <span style="font-weight: 600; font-size: 14px;">Overall: {{ attendance_overall|default:"--" }}%</span>
+    </header>
+
+    {% if at_risk %}
+        <div class="risk-banner">
+            Alert: attendance is below 75% in {{ at_risk|length }} subject(s). Maintaining 75% is required for exam eligibility.
+        </div>
+    {% endif %}
+
+    {% if not attendance %}
+        <div class="card">
+            <h3>No attendance sessions yet</h3>
+            <p style="color:#6b7280;">Records appear here once your faculty starts QR attendance sessions.</p>
+        </div>
+    {% else %}
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Subject</th>
+                        <th>Present</th>
+                        <th>Total</th>
+                        <th>Percent</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in attendance %}
+                        <tr>
+                            <td>{{ row.code }}</td>
+                            <td>{{ row.subject }}</td>
+                            <td>{{ row.present }}</td>
+                            <td>{{ row.total }}</td>
+                            <td>{{ row.percent }}%</td>
+                            <td>
+                                {% if row.at_risk %}
+                                    <span class="pill risk">Below 75%</span>
+                                {% else %}
+                                    <span class="pill ok">OK</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

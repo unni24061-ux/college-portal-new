@@ -1,206 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Portal - My Profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+{% extends 'students/student_base.html' %}
+
+{% block title %}Student Portal - My Profile{% endblock %}
+
+{% block student_head %}
     <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background-color: #f9f9f9; }
-        
-        /* Navbar styling */
-        nav.top-nav {
-            width: 100%;
-            height: 60px;
-            background: #000;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-        }
-        .logo {
-            font-family: 'League Gothic', sans-serif;
-            font-size: 28px;
-            letter-spacing: 1.5px;
-            text-transform: capitalize;
-        }
-
-        /* Layout wrapper below navbar */
-        .app-layout {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - 60px);
-            overflow: hidden;
-        }
-
-        /* Sidebar styling */
-        aside { width: 250px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
-        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 30px; text-align: center; }
-        aside nav { display: flex; flex-direction: column; gap: 15px; }
-        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid transparent; }
-        aside a:hover, aside a.active { border: 1px solid #000; background: #000; color: #fff; }
-
-        /* Main content area */
-        main { flex: 1; display: flex; flex-direction: column; padding: 35px; box-sizing: border-box; overflow-y: auto; }
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
-        header h1 { margin: 0; font-size: 24px; font-family: 'Sen', sans-serif; font-weight: 700; }
-
-        .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; }
-        .card h3 { margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700; }
-
-        /* Display grid replacing input boxes */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .profile-card { display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; }
+        .avatar-wrap { text-align: center; }
+        .profile-image { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid #111418; }
+        .avatar-wrap .handle { font-weight: 700; margin-top: 10px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; flex: 1; min-width: 300px; }
+        @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
         .field-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 13px; font-weight: 600; color: #333; }
-        
-        .info-value { 
-            padding: 10px; 
-            font-size: 14px; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f9f9f9; 
-            color: #333;
-            box-sizing: border-box;
-            min-height: 21px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            width: 100%;
-            max-width: 450px;
-            max-height: 85vh;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            position: relative;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-
-        .modal-content input, .modal-content select {
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 8px 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: 'Inter', sans-serif;
-            background: #fff;
-            outline: none;
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .profile-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 20px; }
-        .action-btn:hover { opacity: 0.8; }
+        label { font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: #6b7280; }
+        .info-value { padding: 10px 12px; font-size: 14px; font-weight: 500; border: 1px solid #d8dade; border-radius: 6px; background: #f9f9f9; color: #111418; }
+        .cgpa-chip { margin-top: 12px; padding: 8px 14px; background: #111418; color: #fff; border-radius: 8px; display: inline-block; font-family: 'Sen', sans-serif; font-weight: 700; }
+        .modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { width: 100%; max-width: 480px; max-height: 88vh; background: #fff; padding: 26px; border-radius: 10px; position: relative; overflow-y: auto; box-sizing: border-box; }
+        .modal-content h2 { font-family: 'Sen', sans-serif; margin-top: 0; }
+        .modal-content input, .modal-content select { width: 100%; margin-bottom: 12px; padding: 9px 11px; box-sizing: border-box; border: 1px solid #c9ccd1; border-radius: 6px; font-family: 'Inter', sans-serif; background: #fff; outline: none; }
+        .close { position: absolute; top: 14px; right: 18px; font-size: 24px; cursor: pointer; }
     </style>
-</head>
-<body>
+{% endblock %}
 
-    <nav class="top-nav">
-        <div class="logo">College portal.</div>
-        <div class="welname">Hello {{request.user}}</div>
-    </nav>
+{% block content %}
+    <header>
+        <h1>My Profile</h1>
+        <span style="font-weight: 600; font-size: 14px;">{{ profile.user.username }}</span>
+    </header>
 
-    <div class="app-layout">
-        <aside>
-            <h2>STUDENT PORTAL</h2>
-            <nav>
-                <a href="{% url 'stud_dash' %}">Dashboard</a>
-                <a href="{% url 'stud_profile' %}" class="active">My Profile</a>
-                <a href="">Academic Details</a>
-                <a href="">Notifications</a>
-                <a href="{% url 'logout' %}" style="margin-top: auto; color: #d9534f; border-color: #d9534f;">Logout</a>
-            </nav>
-        </aside>
-
-        <main>
-            <header>
-                <h1>My Profile</h1>
-                <span style="font-weight: 600; font-size: 14px;">Ktu ID: {{ profile.ktu_id|default:"--" }}</span>
-            </header>
-            
-            <div class="card">
-                <h3>Student Information</h3>
-                <div class="form-grid">
+    <div class="card">
+        <div class="profile-card">
+            <div class="avatar-wrap">
                 {% if profile.profile_image %}
                     <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="profile-image">
                 {% else %}
                     <img src="/media/default.png" alt="Profile Image" class="profile-image">
                 {% endif %}
-
-                    <div class="field-group">
-                        <label>Username</label>
-                        <div class="info-value">{{ profile.user.username |default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Full Name</label>
-                        <div class="info-value">{{ profile.fullname|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Email Address</label>
-                        <div class="info-value">{{ profile.user.email|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Phone Number</label>
-                        <div class="info-value">{{ profile.ph_no|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Date of Birth</label>
-                        <div class="info-value">{{ profile.dob|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Department</label>
-                        <div class="info-value">{{ profile.department|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>Semster</label>
-                        <div class="info-value">{{ profile.sem|default:"--" }}</div>
-                    </div>                    
-                    <div class="field-group">
-                        <label>Roll Number</label>
-                        <div class="info-value">{{ profile.roll_no|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>KTU ID</label>
-                        <div class="info-value">{{ profile.ktu_id|default:"--" }}</div>
-                    </div>
-                    <div class="field-group">
-                        <label>CGPA</label>
-                        <div class="info-value">{{ profile.cgpa|default:"--" }}</div>
-                    </div>
-                </div>
-                <button type="button" id="openModal" class="action-btn">Edit Profile</button>
+                <div class="handle">{{ profile.fullname|default:"--" }}</div>
+                {% if profile.cgpa %}
+                    <div class="cgpa-chip">CGPA {{ profile.cgpa }}</div>
+                {% endif %}
             </div>
-        </main>
+
+            <div class="form-grid">
+                <div class="field-group">
+                    <label>Email Address</label>
+                    <div class="info-value">{{ profile.user.email|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>Phone Number</label>
+                    <div class="info-value">{{ profile.ph_no|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>Date of Birth</label>
+                    <div class="info-value">{{ profile.dob|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>Department</label>
+                    <div class="info-value">{{ profile.department|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>Semester</label>
+                    <div class="info-value">{{ profile.sem|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>Roll Number</label>
+                    <div class="info-value">{{ profile.roll_no|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>KTU ID</label>
+                    <div class="info-value">{{ profile.ktu_id|default:"--" }}</div>
+                </div>
+                <div class="field-group">
+                    <label>Username</label>
+                    <div class="info-value">{{ profile.user.username }}</div>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="openModal" class="action-btn">Edit Profile</button>
     </div>
 
     <div id="editModal" class="modal">
@@ -217,15 +94,16 @@
                         <img src="/media/default.png" alt="Profile Image" class="profile-image">
                     {% endif %}
                     <br><br>
-                    <label>Change Profile Picture</label>
+                    <label style="text-transform:none;">Change Profile Picture</label>
                     <input type="file" name="profile_image" accept="image/*">
                 </div>
-                
+
                 <label>Full Name</label>
                 <input type="text" name="fullname" value="{{ profile.fullname }}">
 
                 <label>Department</label>
                 <select name="department">
+                    <option value="" {% if not profile.department %}selected{% endif %}>-- Select --</option>
                     <option value="CSE" {% if profile.department == 'CSE' %}selected{% endif %}>CSE</option>
                     <option value="IT" {% if profile.department == 'IT' %}selected{% endif %}>IT</option>
                     <option value="EEE" {% if profile.department == 'EEE' %}selected{% endif %}>EEE</option>
@@ -234,42 +112,12 @@
                     <option value="CIVIL" {% if profile.department == 'CIVIL' %}selected{% endif %}>CIVIL</option>
                 </select>
                 <label>Semester</label>
-
-<select name="sem">
-    <option value="">Select Semester</option>
-
-    <option value="1" {% if profile.sem == 1 %}selected{% endif %}>
-        Semester 1
-    </option>
-
-    <option value="2" {% if profile.sem == 2 %}selected{% endif %}>
-        Semester 2
-    </option>
-
-    <option value="3" {% if profile.sem == 3 %}selected{% endif %}>
-        Semester 3
-    </option>
-
-    <option value="4" {% if profile.sem == 4 %}selected{% endif %}>
-        Semester 4
-    </option>
-
-    <option value="5" {% if profile.sem == 5 %}selected{% endif %}>
-        Semester 5
-    </option>
-
-    <option value="6" {% if profile.sem == 6 %}selected{% endif %}>
-        Semester 6
-    </option>
-
-    <option value="7" {% if profile.sem == 7 %}selected{% endif %}>
-        Semester 7
-    </option>
-
-    <option value="8" {% if profile.sem == 8 %}selected{% endif %}>
-        Semester 8
-    </option>
-</select>                
+                <select name="sem">
+                    <option value="">Select Semester</option>
+                    {% for n in "12345678" %}
+                        <option value="{{ n }}" {% if profile.sem|stringformat:"d" == n %}selected{% endif %}>Semester {{ n }}</option>
+                    {% endfor %}
+                </select>
                 <label>KTU ID</label>
                 <input type="text" name="ktu_id" value="{{ profile.ktu_id }}">
 
@@ -283,7 +131,7 @@
                 <input type="date" name="dob" value="{{ profile.dob|date:'Y-m-d' }}">
 
                 <label>CGPA</label>
-                <input type="number" step="0.01" name="cgpa" value="{{ profile.cgpa |default_if_none:''  }}">
+                <input type="number" step="0.01" name="cgpa" value="{{ profile.cgpa |default_if_none:'' }}">
 
                 <button type="submit" class="action-btn" style="width: 100%; margin-top: 10px;">
                     Save Changes
@@ -297,19 +145,8 @@
         const open = document.getElementById("openModal");
         const close = document.querySelector(".close");
 
-        open.onclick = function() {
-            modal.style.display = "flex";
-        }
-
-        close.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        open.onclick = function () { modal.style.display = "flex"; };
+        close.onclick = function () { modal.style.display = "none"; };
+        window.onclick = function (event) { if (event.target == modal) modal.style.display = "none"; };
     </script>
-</body>
-</html>
+{% endblock %}

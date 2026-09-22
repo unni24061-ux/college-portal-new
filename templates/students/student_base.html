@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+    <style>
+        /* Sidebar styling matching the portal theme */
+        aside { width: 250px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
+        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 30px; text-align: center; }
+        aside nav { display: flex; flex-direction: column; gap: 12px; }
+        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px 12px; border-radius: 4px; border: 1px solid transparent; }
+        aside a:hover, aside a.active { border: 1px solid #000; background: #000; color: #fff; }
+
+        .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; }
+        .card h3 { margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700; }
+
+        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 15px; text-align: center; }
+        .action-btn:hover { opacity: 0.8; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+        th { background: #111418; color: #fff; font-family: 'Sen', sans-serif; font-weight: 700; font-size: 13px; }
+        tr:last-child td { border-bottom: none; }
+    </style>
+    {% block student_head %}{% endblock %}
+{% endblock %}
+
+{% block sidebar %}
+    <h2>STUDENT PORTAL</h2>
+    <nav>
+        <a href="{% url 'stud_dash' %}"{% if request.resolver_match.url_name == 'stud_dash' %} class="active"{% endif %}>Dashboard</a>
+        <a href="{% url 'stud_profile' %}"{% if request.resolver_match.url_name == 'stud_profile' %} class="active"{% endif %}>My Profile</a>
+        <a href="{% url 'grade_report' %}"{% if request.resolver_match.url_name == 'grade_report' %} class="active"{% endif %}>Grades</a>
+        <a href="{% url 'attendance_history' %}"{% if request.resolver_match.url_name == 'attendance_history' %} class="active"{% endif %}>Attendance</a>
+        <a href="{% url 'attendance_scan' %}"{% if request.resolver_match.url_name == 'attendance_scan' %} class="active"{% endif %}>QR Check-in</a>
+        <a href="{% url 'badges' %}"{% if request.resolver_match.url_name == 'badges' %} class="active"{% endif %}>My Badges</a>
+        <a href="{% url 'logout' %}" style="margin-top: auto; color: #d9534f; border-color: #d9534f;">Logout</a>
+    </nav>
+{% endblock %}
