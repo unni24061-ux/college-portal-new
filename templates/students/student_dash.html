@@ -45,6 +45,10 @@
             <div class="value">{{ attendance_overall|default:"--" }}{% if attendance_overall %}%{% endif %}</div>
         </div>
         <div class="stat-card">
+            <div class="label">Class Rank (Sem {{ profile.sem|default:"--" }})</div>
+            <div class="value">{% if my_rank %}#{{ my_rank.rank }}<span style="font-size:15px;color:#6b7280;"> / {{ my_rank.total }}</span>{% else %}--{% endif %}</div>
+        </div>
+        <div class="stat-card">
             <div class="label">Semesters Graded</div>
             <div class="value">{{ gpa_sems|length }}</div>
         </div>

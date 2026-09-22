@@ -8,6 +8,7 @@ from academics.models import AttendanceSession, Grade
 
 from .models import student_profile
 from . import reporting
+from academics.analytics import rank_students
 
 
 def _profile(request):
@@ -20,10 +21,19 @@ def dashboard(request):
     gpa_sems = reporting.gpa_by_sem(profile) if profile else []
     attendance = reporting.attendance_by_subject(profile) if profile else []
 
+    my_rank = None
+    if profile:
+        table = rank_students(sem=profile.sem)
+        for row in table:
+            if row['student'].user_id == profile.user_id:
+                my_rank = {'rank': row['rank'], 'total': len(table)}
+                break
+
     return render(request, 'students/student_dash.html', {
         'profile': profile,
         'gpa_sems': gpa_sems,
         'attendance': attendance,
+        'my_rank': my_rank,
         'attendance_risk': [r for r in attendance if r['at_risk']],
         'overall_cgpa': reporting.overall_cgpa(profile) if profile else None,
         'attendance_overall': reporting.attendance_overall(profile) if profile else None,

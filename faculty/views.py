@@ -1,4 +1,4 @@
-﻿from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from . models import faculty_profile, Announcement
 from students.models import student_profile
@@ -11,7 +11,7 @@ from django.db.models.functions import TruncDate
 from academics.models import AttendanceSession, Attendance, Subject, Grade
 from academics import grading
 from accounts.audit import write_audit
-from academics import qr
+from academics import qr, analytics
 
 
 # Create your views here.
@@ -25,16 +25,13 @@ def dashboard(request):
         teacher=request.user, is_active=True, closed_at__isnull=True
     )
 
-    today_start = timezone.localdate()
-
     # Attendance marked today for my subjects
     present_today = Attendance.objects.filter(
         session__teacher=request.user,
-        marked_at__date=today_start,
+        marked_at__date=timezone.localdate(),
     )
 
     # Sessions + subjects I teach
-    subjects = Subject.objects.all()
     subs = AttendanceSession.objects.filter(teacher=request.user) \
         .values('subject__code', 'subject__name') \
         .annotate(sessions=Count('id'))
@@ -53,34 +50,16 @@ def dashboard(request):
             'present': total,
         })
 
-    # Per-day present counts for the last 14 days -> line chart
-    daily = (
-        Attendance.objects
-        .filter(session__teacher=request.user, marked_at__date__gte=today_start - timezone.timedelta(days=13))
-        .annotate(day=TruncDate('marked_at'))
-        .values('day')
-        .annotate(present=Count('id'))
-        .order_by('day')
-    )
+    # Shared analytics: 14-day trend, at-risk students, rankings, grade dist
+    trend = analytics.attendance_trend(request.user, 14)
+    at_risk = analytics.at_risk_students(request.user)
+    rankings = analytics.rank_students()[:5]
+    grade_dist = analytics.grade_distribution
+    subjects = Subject.objects.all()
 
-    # Students at risk (<75% overall) across my subjects
-    at_risk_ids = set()
-    for s in subs:
-        subj = Subject.objects.filter(code=s['subject__code']).first()
-        if subj is None:
-            continue
-        rows = (Attendance.objects
-                .filter(session__teacher=request.user, session__subject=subj)
-                .values('student_id')
-                .annotate(present=Count('id')))
-        for r in rows:
-            total_sessions = AttendanceSession.objects.filter(
-                teacher=request.user, subject=subj
-            ).count()
-            if r['present'] * 100 < 75 * max(total_sessions, 1):
-                at_risk_ids.add(
-                    student_profile.objects.filter(pk=r['student_id']).first()
-                )
+    dist_for = None
+    if subjects:
+        dist_for = grade_dist(subjects.first(), subjects.first().sem)
 
     return render(request, 'faculty/faculty_dash.html', {
         'profile': profile,
@@ -88,8 +67,10 @@ def dashboard(request):
         'subjects': subjects,
         'present_today': present_today.count(),
         'att_by_subject': att_by_subject,
-        'daily': list(daily),
-        'at_risk': [p for p in at_risk_ids if p is not None][:20],
+        'trend': trend,
+        'at_risk': at_risk,
+        'rankings': rankings,
+        'grade_dist': dist_for,
         'announcement_count': Announcement.objects.count(),
     })
 
@@ -355,6 +336,22 @@ def notification(request):
 
 # ---------------------------------------------------------------------------
 # Developer B - QR attendance + grade entry
+
+@login_required(login_url='login_p')
+def rankings(request):
+    """Class performance rankings by CGPA, grouped by semester."""
+    sem_values = [s for s in student_profile.objects.values_list('sem', flat=True).distinct() if s is not None]
+    tables = []
+    for sem in sorted(sem_values, reverse=True):
+        tables.append({
+            'sem': sem,
+            'rows': analytics.rank_students(sem=sem),
+        })
+    return render(request, 'faculty/rankings.html', {
+        'tables': tables,
+        'sectors': analytics.grade_distribution,
+    })
+
 # ---------------------------------------------------------------------------
 
 @login_required(login_url='login_p')
