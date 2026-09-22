@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 # Create your models here.
 class faculty_profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fullname = models.CharField(max_length=100, null=True, blank=True)
     designation = models.CharField(max_length=100, null=True, blank=True)
     department = models.CharField(max_length=100, blank=True, null=True)
@@ -21,7 +21,7 @@ class Announcement(models.Model):
     message = models.TextField()
 
     created_by = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
 

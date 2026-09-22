@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 
+from accounts.audit import write_audit
 from faculty.models import faculty_profile
 
 
@@ -40,6 +41,13 @@ def approve_faculty(request, id):
     faculty.is_approved = True
     faculty.save()
 
+    write_audit(
+        request.user,
+        "FACULTY_APPROVED",
+        faculty,
+        f"{faculty.user.username} approved",
+    )
+
     messages.success(
         request,
         f"{faculty.user.username} has been approved."
@@ -54,6 +62,13 @@ def reject_faculty(request, id):
 
     faculty.is_approved = False
     faculty.save()
+
+    write_audit(
+        request.user,
+        "FACULTY_REJECTED",
+        faculty,
+        f"{faculty.user.username} rejected",
+    )
 
     messages.error(
         request,

@@ -58,23 +58,36 @@ The system currently supports three primary roles:
 
 The project follows a modular Django application structure:
 
-* `accounts` — Authentication and user management
+* `accounts` — Custom user model (role-based RBAC) and user management
 * `faculty` — Faculty-related functionality
 * `students` — Student-related functionality
+* `academics` — Shared academic models (Department, Course, Subject, Grade, Attendance) + QR attendance engine
+* `portal_admin` — Admin portal (faculty approval workflow)
 * `collegePortal` — Core Django project configuration
 * `templates` — Shared user interface templates
 
 ## 🗄️ Database Foundation
 
-The initial database architecture is designed to support:
+* Department, Course, Subject catalog
+* Student profiles, Faculty profiles
+* Grade records (per student / subject / semester)
+* Attendance sessions and records (QR check-in)
+* Audit log of portal actions
 
-* Departments
-* Courses
-* Subjects
-* Student profiles
-* Faculty profiles
-* Academic relationships
-* Initial grade-related structures
+## 🔐 Roles
+
+| Role    | Access                                                    |
+| ------- | --------------------------------------------------------- |
+| Admin   | Django admin site, faculty approval, academic catalog     |
+| Teacher | Faculty portal + QR attendance session control (approved faculty only) |
+| Student | Student portal + QR attendance check-in                   |
+
+## 🎫 QR Attendance Engine
+
+* Teacher starts a time-bound, server-side attendance session for a subject.
+* A 30-second rotating HMAC-signed token is stored on the session row (serverless-safe).
+* `/attendance/start/`, `/attendance/refresh/`, `/attendance/checkin/`, `/attendance/end/<id>/` are the shared endpoints.
+* Students submit the current token to mark attendance; duplicates, stale or tampered tokens are rejected.
 
 ## ⚙️ Production-Ready Configuration
 
@@ -128,11 +141,12 @@ The initial database architecture is designed to support:
 ```text
 collegePortal/
 │
-├── accounts/                 # Authentication and user management
+├── accounts/                 # Custom user model (role/RBAC), audit log, auth views
 │   ├── models.py
 │   ├── views.py
 │   ├── forms.py
-│   └── ...
+│   ├── decorators.py
+│   └── audit.py
 │
 ├── faculty/                  # Faculty-related functionality
 │   ├── models.py
@@ -143,6 +157,16 @@ collegePortal/
 │   ├── models.py
 │   ├── views.py
 │   └── ...
+│
+├── academics/                # Shared academic models + QR attendance engine
+│   ├── models.py
+│   ├── views.py
+│   ├── qr.py
+│   ├── admin.py
+│   └── urls.py
+│
+├── portal_admin/             # Admin portal (faculty approval workflow)
+│   └── views.py
 │
 ├── collegePortal/            # Core project configuration
 │   ├── settings.py

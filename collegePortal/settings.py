@@ -59,8 +59,12 @@ INSTALLED_APPS = [
     'accounts',
     'students',
     'faculty',
+    'academics',
     'portal_admin'
 ]
+
+# Shared foundation: custom user model with a role field for RBAC.
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
