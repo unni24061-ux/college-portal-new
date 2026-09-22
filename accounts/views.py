@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from .forms import createuserform
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 
+from .forms import createuserform
 from students.models import student_profile
 from faculty.models import faculty_profile
-from django.contrib.auth.decorators import login_required
+
+User = get_user_model()
 
 
 # Student Registration
@@ -14,7 +15,9 @@ def stud_reg(request):
         form = createuserform(request.POST)
 
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.role = User.Roles.STUDENT
+            user.save()
 
             student_profile.objects.create(
                 user=user
@@ -38,7 +41,9 @@ def faculty_reg(request):
         form = createuserform(request.POST)
 
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.role = User.Roles.TEACHER
+            user.save()
 
             faculty_profile.objects.create(
                 user=user
@@ -70,18 +75,21 @@ def login_page(request):
             login(request, user)
             messages.success(request, "Login successful.")
 
+            if user.is_staff or user.role == User.Roles.ADMIN:
+                return redirect('/admin/')
+
             if student_profile.objects.filter(user=user).exists():
-                messages.success(request,"Succesfully logged in")
+                messages.success(request, "Successfully logged in")
                 return redirect('stud_dash')
 
             elif faculty_profile.objects.filter(user=user).exists():
-                faculty=faculty_profile.objects.get(user=user)
+                faculty = faculty_profile.objects.get(user=user)
                 if not faculty.is_approved:
                     messages.warning(
-                        request,"your account is not verified"
+                        request, "your account is not verified"
                     )
                     return redirect('pend_page')
-                messages.success(request,"Successfully logged in")
+                messages.success(request, "Successfully logged in")
                 return redirect('facu_dash')
 
             else:
@@ -93,11 +101,13 @@ def login_page(request):
 
     return render(request, 'accounts/login.html')
 
+
 def logout_page(request):
 
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect('login_p')
 
+
 def pending(request):
-    return render(request,'accounts/pending.html')
+    return render(request, 'accounts/pending.html')

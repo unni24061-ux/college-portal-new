@@ -1,5 +1,5 @@
-from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
+﻿from django.shortcuts import render,redirect
+from accounts.decorators import approved_teacher_required
 from . models import faculty_profile, Announcement
 from students.models import student_profile
 from django.contrib import messages
@@ -8,17 +8,17 @@ from django.db.models import Q
 
 
 # Create your views here.
-@login_required(login_url='login_p')
+@approved_teacher_required
 def dashboard(request):
     return render(request,'faculty/faculty_dash.html')
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def f_profile(request):
     profile = faculty_profile.objects.get(user=request.user)
     return render(request,'faculty/faculty_myprofile.html',{'profile':profile})
 
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def f_edit_profile(request):
 
     profile = faculty_profile.objects.get(user=request.user)
@@ -64,7 +64,7 @@ def f_edit_profile(request):
 
     return redirect("facu_profile")
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def stud_manage(request):
     students = student_profile.objects.all()
 
@@ -91,13 +91,13 @@ def stud_manage(request):
 
 
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def preview(request,id):
     student=student_profile.objects.get(id=id)
 
     return render(request,'faculty/preview_pro.html',{'student':student})
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def edit_pro_f(request, id):
 
     profile = student_profile.objects.get(id=id)
@@ -176,7 +176,7 @@ def edit_pro_f(request, id):
 
     return redirect("preview", id=id)
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def campus_connect(request):
     role = request.GET.get('role', 'student')
 
@@ -211,7 +211,7 @@ def campus_connect(request):
     return render(request, 'faculty/campus_connect.html', {'directory': directory, 'role': role})
 
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def announcement(request):
 
     if request.method == "POST":
@@ -237,7 +237,7 @@ def announcement(request):
     return render(request, 'faculty/announcement.html')
 
 
-@login_required(login_url='login_p')
+@approved_teacher_required
 def notification(request):
 
     announcements = Announcement.objects.all().order_by(
@@ -251,3 +251,5 @@ def notification(request):
             'announcements': announcements
         }
     )
+
+

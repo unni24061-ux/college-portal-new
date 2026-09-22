@@ -1,19 +1,20 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
+from accounts.decorators import role_required
+from accounts.models import User
 from .models import *
 from django.contrib import messages
 
 # Create your views here.
-@login_required(login_url='login_p')
+@role_required(User.Roles.STUDENT)
 def dashboard(request):
     return render(request,'students/student_dash.html')
 
-@login_required(login_url='login_p')
+@role_required(User.Roles.STUDENT)
 def s_profile(request):
     profile = student_profile.objects.get(user=request.user)
     return render(request,'students/stud_myprofile.html',{'profile':profile})
 
-@login_required(login_url='login_p')
+@role_required(User.Roles.STUDENT)
 def edit_profile(request):
 
     profile = student_profile.objects.get(user=request.user)
