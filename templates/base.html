@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}College Portal{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Sen:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background-color: #f9f9f9; }
+
+        /* Navbar styling */
+        nav.top-nav {
+            width: 100%;
+            height: 60px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .logo {
+            font-family: 'League Gothic', sans-serif;
+            font-size: 28px;
+            letter-spacing: 1.5px;
+            text-transform: capitalize;
+        }
+
+        /* Layout wrapper below navbar */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* Main content area */
+        main { flex: 1; display: flex; flex-direction: column; padding: 35px; box-sizing: border-box; overflow-y: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
+        header h1 { margin: 0; font-size: 24px; font-family: 'Sen', sans-serif; font-weight: 700; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="logo">College portal.</div>
+        <div class="welname">Hello {{ request.user }}</div>
+    </nav>
+
+    <div class="app-layout">
+        <aside>
+            {% block sidebar %}
+            <h2>PORTAL</h2>
+            <nav>
+                <a href="#">Dashboard</a>
+            </nav>
+            {% endblock %}
+        </aside>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+</body>
+</html>

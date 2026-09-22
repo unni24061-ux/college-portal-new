@@ -28,11 +28,13 @@ CLOUDINARY_STORAGE = {
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+# SECURITY WARNING: keep the secret key used in production secret!
+# The fallback exists so a fresh local checkout runs without a .env.
+# Always set a real SECRET_KEY via environment variables in production.
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-only-key-change-me")
 
 ALLOWED_HOSTS = [ "localhost",
     "127.0.0.1",
@@ -153,9 +155,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        "BACKEND": (
+            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            if os.environ.get("CLOUDINARY_CLOUD_NAME")
+            else "django.core.files.storage.FileSystemStorage"
+        ),
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # Manifest/WhiteNoise requires a `collectstatic` step; use the plain
+        # backend in development so a fresh checkout renders without errors.
+        "BACKEND": (
+            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            if not DEBUG
+            else "django.contrib.staticfiles.storage.StaticFilesStorage"
+        ),
     },
 }
