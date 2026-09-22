@@ -1,0 +1,188 @@
+{% extends 'faculty/faculty_base.html' %}
+{% load static %}
+
+{% block title %}Grade Entry{% endblock %}
+
+{% block faculty_head %}
+<style>
+  .grade-toolbar {
+    border: 3px solid #000;
+    box-shadow: 8px 8px 0 #000;
+    background: #fff;
+    padding: 1.25rem;
+  }
+  .grade-toolbar .form-label {
+    font-family: "League Gothic";
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: 1.05rem;
+    margin-bottom: 0.25rem;
+  }
+  .grade-toolbar select,
+  .grade-toolbar input {
+    border: 2px solid #000;
+    border-radius: 0;
+    font-family: "Sen", sans-serif;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.6rem;
+    background: #fff;
+    width: 100%;
+  }
+  .grade-toolbar select:focus,
+  .grade-toolbar input:focus {
+    outline: none;
+    box-shadow: 3px 3px 0 #000;
+    border-color: #000;
+  }
+  .grade-row {
+    border: 2px solid #000;
+    background: #fff;
+    margin-bottom: 0.5rem;
+  }
+  .grade-row .info {
+    padding: 0.7rem 0.9rem;
+  }
+  .grade-row .info .nm {
+    font-family: "Sen", sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+  .grade-row .info .meta {
+    font-family: "Sen", sans-serif;
+    font-size: 0.7rem;
+    color: #555;
+  }
+  .grade-row input[type="number"] {
+    border: 2px solid #000;
+    border-radius: 0;
+    font-family: "Sen", sans-serif;
+    font-size: 0.9rem;
+    width: 90px;
+    padding: 0.4rem 0.45rem;
+    text-align: center;
+  }
+  .grade-row input[type="number"]:focus {
+    outline: none;
+    box-shadow: 3px 3px 0 #000;
+  }
+  .saved-chip {
+    font-family: "Sen", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.55rem;
+    border: 2px solid #000;
+    background: #fff;
+    white-space: nowrap;
+  }
+  .g-s { background:#ffd100; } .g-a { background:#2b9c6c; color:#fff; }
+  .g-bp { background:#7fb3e3; } .g-b { background:#8fd08f; }
+  .g-c { background:#fff3a6; } .g-d { background:#ffb380; }
+  .g-f { background:#ff6b6b; color:#fff; }
+  .live-link { text-decoration:none; color:#000; }
+  .live-link:hover { color:#000; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1080px; padding-top: 1rem;">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h1 class="display-5 fw-bold mb-0" style="font-family:'League Gothic'">GRADE ENTRY</h1>
+      <p class="mb-0" style="font-family:'Sen';font-size:0.85rem;">Enter marks for a subject &amp; semester &mdash; grades auto-map.</p>
+    </div>
+    {% if live_sessions.count %}
+    <a href="#" class="live-link d-none d-md-block">
+      <span class="pill-live">{{ live_sessions.count }} LIVE SESSION{{ live_sessions.count|pluralize }}</span>
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="grade-toolbar mb-4">
+    <form method="get" action="{% url 'f_grade' %}" class="row g-3 align-items-end" id="pickerForm">
+      <div class="col-md-5">
+        <label class="form-label" for="subjectSel">SUBJECT</label>
+        <select name="subject" id="subjectSel" required>
+          <option value="">-- choose subject --</option>
+          {% for s in subjects %}
+          <option value="{{ s.pk }}" {% if subject and s.pk == subject.pk %}selected{% endif %}>
+            {{ s.code }} &middot; {{ s.name }} (Sem {{ s.sem }})
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="semSel">SEMESTER</label>
+        <select name="sem" id="semSel" required>
+          <option value="">-- semester --</option>
+          {% for s in "12345678" %}
+          <option value="{{ s }}" {% if sem == s %}selected{% endif %}>Sem {{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-dark w-100 fw-bold"
+                style="border:3px solid #000;box-shadow:5px 5px 0 #000;font-family:'League Gothic';letter-spacing:0.05em;">
+          LOAD ROSTER
+        </button>
+      </div>
+      <div class="col-md-2 text-md-end">
+        <span style="font-family:'Sen';font-size:0.72rem;" id="rowCount"></span>
+      </div>
+    </form>
+  </div>
+
+  {% if not subject %}
+  <div class="empty-state">
+    Pick a subject and a semester above to load the class roster, then enter marks.
+  </div>
+  {% elif rows %}
+  <form method="post" action="{% url 'f_grade_save' %}" id="gradeForm">
+    {% csrf_token %}
+    <input type="hidden" name="subject" value="{{ subject.pk }}">
+    <input type="hidden" name="sem" value="{{ sem }}">
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="fw-bold mb-0" style="font-family:'League Gothic';">
+        {{ subject.code }} &middot; SEM {{ sem }} &middot; {{ rows|length }} STUDENTS
+      </h5>
+      <button type="submit" class="btn btn-dark fw-bold"
+              style="border:3px solid #000;box-shadow:5px 5px 0 #000;font-family:'League Gothic';letter-spacing:0.05em;">
+        SAVE GRADES
+      </button>
+    </div>
+
+    {% for row in rows %}
+    <div class="grade-row d-flex justify-content-between align-items-center">
+      <div class="info" style="min-width:0;">
+        <div class="nm text-truncate">{{ row.student.fullname }}</div>
+        <div class="meta">
+          {{ row.student.roll_no }}{% if row.student.ktu_id %} &middot; {{ row.student.ktu_id }}{% endif %}
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2 pe-2">
+        {% if row.existing %}
+        <span class="saved-chip g-{{ row.existing.grade|stringformat:'s'|lower }}">{{ row.existing.grade }} / {{ row.existing.marks|floatformat:0 }}</span>
+        {% endif %}
+        <input type="number" name="marks_{{ row.student.pk }}" min="0" max="100" step="0.5"
+               placeholder="marks" value="{% if row.existing %}{{ row.existing.marks|floatformat:-2 }}{% endif %}">
+      </div>
+    </div>
+    {% endfor %}
+
+    <div style="height:0.5rem;"></div>
+    <button type="submit" class="btn btn-dark fw-bold mt-1 mb-2"
+            style="border:3px solid #000;box-shadow:6px 6px 0 #000;font-family:'League Gothic';letter-spacing:0.05em;width:100%;">
+      SAVE GRADES FOR {{ rows|length }} STUDENTS
+    </button>
+  </form>
+  <p style="font-family:'Sen';font-size:0.72rem;color:#555;">
+    Grading: A+ &ge;90 &middot; A &ge;85 &middot; B+ &ge;80 &middot; B &ge;75 &middot; C &ge;70 &middot; D &ge;60 &middot; E &ge;50 &middot; F &lt;50.
+  </p>
+  {% else %}
+  <div class="empty-state">
+    No students found for this subject/semester combination.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

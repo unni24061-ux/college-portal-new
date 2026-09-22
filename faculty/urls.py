@@ -28,6 +28,10 @@ urlpatterns = [
     path('preview/edit/<int:id>',views.edit_pro_f,name='profile_edit'),
     path('connect/',views.campus_connect,name='campus_connect'),
     path('notifications/',views.notification,name='f_notification'),
+    path('attendance/',views.attendance_manager,name='f_attendance'),
+    path('attendance/<int:pk>/',views.session_display,name='f_session_display'),
+    path('grades/',views.grade_entry,name='f_grade'),
+    path('grades/save/',views.grade_save,name='f_grade_save'),
     
 
 

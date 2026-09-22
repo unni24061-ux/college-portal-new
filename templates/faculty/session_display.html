@@ -1,0 +1,279 @@
+{% extends 'faculty/faculty_base.html' %}
+{% load static %}
+
+{% block title %}{{ session.subject.name }} - Live QR Attendance{% endblock %}
+
+{% block faculty_head %}
+<style>
+  .qr-stage {
+    border: 3px solid #000;
+    box-shadow: 8px 8px 0 #000;
+    background: #fff;
+    padding: 1.75rem;
+    text-align: center;
+  }
+  .qr-frame {
+    display: inline-block;
+    border: 10px solid #fff;
+    background: #fff;
+    outline: 3px solid #000;
+    box-shadow: inset 0 0 0 3px #fff;
+    padding: 0.35rem;
+  }
+  .qr-frame canvas, .qr-frame img {
+    display: block;
+    width: 232px;
+    height: 232px;
+    image-rendering: pixelated;
+  }
+  .token-chip {
+    font-family: "Sen", sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: tc(0.08em);
+    background: #000;
+    color: #fff;
+    padding: 0.35rem 0.7rem;
+    word-break: break-all;
+  }
+  .countdown-ring {
+    font-family: "League Gothic", "Sen", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .pill-live {
+    background: #0c8a3f;
+    color: #fff;
+    font-family: "Sen", sans-serif;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    letter-spacing: 0.08em;
+  }
+  .pill-closed {
+    background: #cfcfd4;
+    color: #000;
+    font-family: "Sen", sans-serif;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    letter-spacing: 0.08em;
+  }
+  .present-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #000;
+    padding: 0.55rem 0.85rem;
+    margin-bottom: 0.5rem;
+    background: #fff;
+  }
+  .present-row .tick {
+    font-family: "Sen", sans-serif;
+    font-weight: 700;
+    color: #0c8a3f;
+  }
+  .empty-state {
+    border: 2px dashed #000;
+    padding: 1.25rem;
+    text-align: center;
+    font-family: "Sen", sans-serif;
+    font-size: 0.85rem;
+    background: #fff;
+  }
+  #closedBox {
+    border: 3px solid #000;
+    box-shadow: 8px 8px 0 #000;
+    background: #fff;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1080px; padding-top: 1rem;">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h1 class="display-5 fw-bold mb-1" style="font-family:'League Gothic'">QR ATTENDANCE</h1>
+      <p class="mb-0" style="font-family:'Sen';font-size:0.85rem;">
+        {{ session.subject.code }} · {{ session.subject.name }} · Sem {{ session.subject.sem }}
+      </p>
+    </div>
+    <div id="statusPill">
+      {% if live %}
+      <span class="pill-live">LIVE</span>
+      {% else %}
+      <span class="pill-closed">CLOSED</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="qr-stage">
+        {% if live %}
+        <p class="fw-bold text-uppercase mb-2" style="font-family:'League Gothic';letter-spacing:0.06em;">
+          Scan to mark present
+        </p>
+        <div id="qrHolder" class="mb-2"></div>
+        <div class="token-chip mb-2" id="tokenChip"></div>
+        <div class="countdown-ring mb-1">
+          <span id="countdown">--</span>
+          <span style="font-family:'Sen';font-size:0.7rem;">s until token rotates</span>
+        </div>
+        <p id="qrHint" class="mb-0" style="font-family:'Sen';font-size:0.72rem;color:#555;">
+          QR auto-refreshes every few seconds. Students scan from the check-in page.
+        </p>
+        {% else %}
+        <p class="fw-bold text-uppercase mb-3" style="font-family:'League Gothic';letter-spacing:0.06em;">
+          Session closed at {{ session.closed_at|date:"H:i" }}
+        </p>
+        <p style="font-family:'Sen';font-size:0.85rem;">
+          {{ records|length }} student{{ records|length|pluralize }} marked present in this session.
+        </p>
+        {% endif %}
+      </div>
+
+      {% if live %}
+      <form method="post" action="{% url 'attendance_end' session.pk %}" class="mt-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-dark w-100 fw-bold" style="border:3px solid #000;box-shadow:6px 6px 0 #000;">
+          End Session
+        </button>
+      </form>
+      {% endif %}
+    </div>
+
+    <div class="col-lg-7">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold mb-0" style="font-family:'League Gothic';">PRESENT NOW</h5>
+        <span class="badge text-bg-dark" id="presentCount">{{ records|length }}</span>
+      </div>
+
+      <div id="presentList">
+        {% if records %}
+        {% for rec in records %}
+        <div class="present-row" data-sid="{{ rec.student.pk }}">
+          <span style="font-family:'Sen';font-size:0.85rem;">
+            {{ rec.student.fullname }} <small class="text-muted">({{ rec.student.roll_no }})</small>
+          </span>
+          <span class="tick">PRESENT</span>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">No one marked present yet.</div>
+        {% endif %}
+      </div>
+
+      {% if live %}
+      <div class="empty-state mt-2" id="syncNote" style="font-size:0.75rem;border-style:solid;">
+        Watching this screen live &mdash; present list updates automatically.
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block faculty_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+  var SID = {{ session.pk }};
+  var LIVE = {{ live|yesno:"true,false" }};
+  var csrf = "";
+  (document.cookie.split("; ") || []).forEach(function (p) {
+    if (p.indexOf("csrftoken=") === 0) csrf = p.slice(10);
+  });
+
+  function drawQR(payload) {
+    var box = document.getElementById("qrHolder");
+    box.innerHTML = "";
+    var qr = new QRCode(box, {
+      text: payload,
+      width: 232,
+      height: 232,
+      correctLevel: QRCode.CorrectLevel.M,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+    });
+    if (qr && qr._el && qr._el.lastChild) {
+      qr._el.lastChild.style.display = "none";
+    }
+    document.getElementById("tokenChip").textContent = payload;
+  }
+
+  function poll() {
+    fetch("{% url 'attendance_refresh' %}?session=" + SID, {
+      credentials: "same-origin",
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.status === "ok") {
+          drawQR(d.token);
+          var secs = (typeof d.rotates_in === "number") ? Math.max(1, d.rotates_in) : 30;
+          var cd = document.getElementById("countdown");
+          cd.textContent = secs;
+          renderPresent(d.present_list || []);
+        } else {
+          window.location.reload();
+        }
+      })
+      .catch(function () {
+        document.getElementById("countdown").textContent = "--";
+      });
+  }
+
+  function renderPresent(list) {
+    var host = document.getElementById("presentList");
+    var count = document.getElementById("presentCount");
+    if (!Array.isArray(list)) return;
+
+    if (list.length === 0) {
+      count.textContent = "0";
+      host.innerHTML = '<div class="empty-state">No one marked present yet.</div>';
+      return;
+    }
+
+    count.textContent = list.length;
+
+    var known = {};
+    [].forEach.call(host.children, function (el) {
+      if (el.getAttribute && el.getAttribute("data-sid")) {
+        known[el.getAttribute("data-sid")] = el;
+      }
+    });
+
+    var frag = document.createDocumentFragment();
+
+    list.forEach(function (item) {
+      var sid = String(item.student_id || item.pk || "");
+      var row = known[sid];
+
+      if (!row) {
+        row = document.createElement("div");
+        row.className = "present-row";
+        row.setAttribute("data-sid", sid);
+        var name = document.createElement("span");
+        name.style.fontFamily = "Sen";
+        name.style.fontSize = "0.85rem";
+        name.textContent = item.fullname || item.name || ("Student " + sid);
+        var tick = document.createElement("span");
+        tick.className = "tick";
+        tick.textContent = "PRESENT";
+        row.appendChild(name);
+        row.appendChild(tick);
+      }
+      frag.appendChild(row);
+    });
+
+    host.innerHTML = "";
+    host.appendChild(frag);
+  }
+
+  if (LIVE) {
+    drawQR("cpatt:{{ session.pk }}:{{ session.token }}");
+    var secs0 = {{ session.token_bucket_remaining|default:"30" }};
+    document.getElementById("countdown").textContent = secs0;
+    poll();
+    window.setInterval(poll, 4000);
+  }
+})();
+</script>
+{% endblock %}
