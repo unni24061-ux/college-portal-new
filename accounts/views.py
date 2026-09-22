@@ -81,7 +81,6 @@ def login_page(request):
                         request,"your account is not verified"
                     )
                     return redirect('pend_page')
-                login(request,user)
                 messages.success(request,"Successfully logged in")
                 return redirect('facu_dash')
 

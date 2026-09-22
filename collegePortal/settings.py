@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'collegePortal.wsgi.application'
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
+        default=f"sqlite:///{str(BASE_DIR / 'db.sqlite3').replace(chr(92), '/')}",
         conn_max_age=600,
     )
 }
@@ -147,6 +147,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 STORAGES = {

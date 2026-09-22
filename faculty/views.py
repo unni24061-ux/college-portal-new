@@ -68,16 +68,17 @@ def f_edit_profile(request):
 def stud_manage(request):
     students = student_profile.objects.all()
 
-    search=request.GET.get('search','').strip()
-    if search :
-        students = students.filter(
-            Q(fullname__icontains=search)|
-            Q(roll_no__icontains=search)|
-            Q(user__email__icontains=search)|
-            Q(department__iexact=search)|
+    search = request.GET.get('search', '').strip()
+    if search:
+        q = (
+            Q(fullname__icontains=search) |
+            Q(user__email__icontains=search) |
+            Q(department__icontains=search) |
             Q(ktu_id__icontains=search)
-
         )
+        if search.isdigit():
+            q = q | Q(roll_no__exact=int(search))
+        students = students.filter(q)
 
     department=request.GET.get('department')
     if department:
@@ -176,62 +177,38 @@ def edit_pro_f(request, id):
     return redirect("preview", id=id)
 
 @login_required(login_url='login_p')
+def campus_connect(request):
+    role = request.GET.get('role', 'student')
 
-def campus_connect(request,role,id):
-
-
-
-    role=request.GET.get('role')
-
-
-
-    if role == ('faculty'):
-
+    if role == 'faculty':
         directory = faculty_profile.objects.all()
-
     else:
+        role = 'student'
+        directory = student_profile.objects.all()
 
-        directory= student_profile.objects.all()
-
-   
-
-    search=request.GET.get('search','').strip()
-
-    if search :
-
-        directory = directory.filter(
-
-            Q(fullname__icontains=search)|
-
-            Q(roll_no__icontains=search)|
-
-            Q(user__email__icontains=search)|
-
-            Q(department__iexact=search)|
-
-            Q(ktu_id__icontains=search)
-
-
-
+    search = request.GET.get('search', '').strip()
+    if search:
+        q = (
+            Q(fullname__icontains=search) |
+            Q(user__email__icontains=search) |
+            Q(department__icontains=search)
         )
+        if role == 'student':
+            q = q | Q(ktu_id__icontains=search)
+            if search.isdigit():
+                q = q | Q(roll_no__exact=int(search))
+        directory = directory.filter(q)
 
-
-
-    department=request.GET.get('department')
-
+    department = request.GET.get('department')
     if department:
+        directory = directory.filter(department__icontains=department)
 
-        directory=directory.filter(department__iexact=department)
+    if role == 'student':
+        sem = request.GET.get('sem')
+        if sem:
+            directory = directory.filter(sem=sem)
 
-
-
-    sem=request.GET.get('sem')
-
-    if sem:
-
-        directory=directory.filter(sem=sem)
-
-    return render(request,'faculty/campus_connect.html',{'directory':directory,'role':role})
+    return render(request, 'faculty/campus_connect.html', {'directory': directory, 'role': role})
 
 
 @login_required(login_url='login_p')
