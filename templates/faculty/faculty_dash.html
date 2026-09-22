@@ -40,6 +40,20 @@
             <h1>Faculty Dashboard</h1>
             <span style="font-weight: 600; font-size: 14px;">Portal Active</span>
         </header>
+
+        <div id="at-risk-section" style="border: 2px solid #000; border-radius: 8px; background: #fff; padding: 20px; margin-bottom: 22px;">
+            <h3 style="margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700;">Students at-risk (below 75% attendance)</h3>
+            {% if at_risk %}
+            <ul style="margin: 10px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.8;">
+                {% for student in at_risk %}
+                <li>{{ student.fullname }} <small>(roll {{ student.roll_no }})</small></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="margin: 10px 0 0; font-size: 14px; color: #666;">No students are currently at-risk.</p>
+            {% endif %}
+        </div>
+
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
 
             <div class="card">

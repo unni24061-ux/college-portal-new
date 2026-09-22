@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+    <style>
+        aside { width: 260px; background: #fff; border-right: 2px solid #000; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+        aside h2 { font-family: 'Sen', sans-serif; font-size: 18px; font-weight: 700; margin-top: 0; margin-bottom: 25px; text-align: center; }
+        aside nav { display: flex; flex-direction: column; gap: 10px; }
+        aside a { text-decoration: none; color: #333; font-weight: 600; font-size: 14px; padding: 10px 12px; border-radius: 4px; border: 1px solid transparent; display: flex; align-items: center; gap: 10px; }
+        aside a i { width: 16px; text-align: center; }
+        aside a:hover, aside a.active { border: 1px solid #000; background: #000; color: #fff; }
+
+        .card { border: 2px solid #000; padding: 25px; border-radius: 8px; background: #fff; box-sizing: border-box; }
+        .card h3 { margin-top: 0; font-family: 'Sen', sans-serif; font-weight: 700; }
+
+        .action-btn { padding: 10px 16px; background: #000; color: #fff; border: none; cursor: pointer; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; margin-top: 15px; text-align: center; }
+        .action-btn:hover { opacity: 0.8; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+        th { background: #111418; color: #fff; font-family: 'Sen', sans-serif; font-weight: 700; font-size: 13px; }
+        tr:last-child td { border-bottom: none; }
+
+        label { font-size: 13px; font-weight: 600; color: #333; display: block; margin-bottom: 4px; }
+        input, select { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #c9ccd1; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 14px; background: #fff; }
+    </style>
+    {% block faculty_head %}{% endblock %}
+{% endblock %}
+
+{% block sidebar %}
+    <h2>FACULTY PORTAL</h2>
+    <nav>
+        <a href="{% url 'facu_dash' %}"{% if request.resolver_match.url_name == 'facu_dash' %} class="active"{% endif %}><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="{% url 'f_attendance' %}"{% if request.resolver_match.url_name == 'f_attendance' or request.resolver_match.url_name == 'f_session_display' %} class="active"{% endif %}><i class="fa-solid fa-qrcode"></i> QR Attendance</a>
+        <a href="{% url 'f_grade' %}"{% if request.resolver_match.url_name == 'f_grade' %} class="active"{% endif %}><i class="fa-solid fa-file-pen"></i> Grades</a>
+        <a href="{% url 'facu_profile' %}"{% if request.resolver_match.url_name == 'facu_profile' %} class="active"{% endif %}><i class="fa-solid fa-user"></i> My Profile</a>
+        <a href="{% url 'f_manage' %}"{% if request.resolver_match.url_name == 'f_manage' %} class="active"{% endif %}><i class="fa-solid fa-users-gear"></i> Student Management</a>
+        <a href="{% url 'announcement' %}"{% if request.resolver_match.url_name == 'announcement' %} class="active"{% endif %}><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+        <a href="{% url 'f_notification' %}"{% if request.resolver_match.url_name == 'f_notification' %} class="active"{% endif %}><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="{% url 'campus_connect' %}"{% if request.resolver_match.url_name == 'campus_connect' %} class="active"{% endif %}><i class="fa-solid fa-network-wired"></i> Campus Connect</a>
+        <a href="{% url 'logout' %}" style="margin-top: auto; color: #d9534f; border-color: #d9534f;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </nav>
+{% endblock %}
